@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sofia con Voz - Asistente Virtual</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Arial', sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px;
+        }
+        .container { 
+            background: white; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            width: 100%; max-width: 500px; overflow: hidden;
+        }
+        .header { 
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); color: white;
+            padding: 30px 20px; text-align: center; position: relative;
+        }
+        .avatar { 
+            width: 80px; height: 80px; background: rgba(255,255,255,0.2); border-radius: 50%;
+            margin: 0 auto 15px; display: flex; align-items: center; justify-content: center;
+            font-size: 35px; font-weight: bold; border: 3px solid rgba(255,255,255,0.3);
+        }
+        h1 { font-size: 28px; margin-bottom: 5px; }
+        .subtitle { font-size: 14px; opacity: 0.9; margin-bottom: 10px; }
+        .voice-buttons { display: flex; gap: 10px; justify-content: center; margin-top: 10px; }
+        .voice-btn { 
+            background: rgba(255,255,255,0.2); border: 2px solid white; color: white;
+            padding: 8px 15px; border-radius: 20px; cursor: pointer; font-size: 12px; transition: all 0.3s;
+        }
+        .voice-btn:hover { background: white; color: #3498db; }
+        .chat-container { height: 400px; padding: 20px; overflow-y: auto; background: #f8f9fa; }
+        .message { 
+            margin-bottom: 15px; padding: 12px 15px; border-radius: 18px; max-width: 80%; word-wrap: break-word;
+        }
+        .user-message { 
+            background: #3498db; color: white; margin-left: auto; border-bottom-right-radius: 5px;
+        }
+        .sofia-message { 
+            background: white; color: #2c3e50; border: 1px solid #e0e0e0; border-bottom-left-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .input-container { 
+            padding: 20px; background: white; border-top: 1px solid #e0e0e0; display: flex; gap: 10px;
+        }
+        input { 
+            flex: 1; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 25px; outline: none;
+            font-size: 14px; transition: border-color 0.3s;
+        }
+        input:focus { border-color: #3498db; }
+        button { 
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); color: white; border: none;
+            border-radius: 25px; padding: 12px 25px; cursor: pointer; font-weight: bold; transition: transform 0.2s;
+        }
+        button:hover { transform: translateY(-2px); }
+        .typing-indicator { 
+            display: none; padding: 10px 15px; background: white; border-radius: 18px; border: 1px solid #e0e0e0;
+            width: fit-content; margin-bottom: 15px; font-style: italic; color: #7f8c8d;
+        }
+        .status-indicator { 
+            position: absolute; top: 10px; right: 10px; font-size: 10px; background: rgba(255,255,255,0.3);
+            padding: 4px 8px; border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="status-indicator">🔴 Sin voz</div>
+            <div class="avatar">S</div>
+            <h1>Sofia 💡</h1>
+            <p class="subtitle">Representante de atención al cliente</p>
+            <div class="voice-buttons">
+                <button class="voice-btn" onclick="startVoiceRecognition()">🎤 Hablar</button>
+                <button class="voice-btn" onclick="speakTest()">🔊 Probar Voz</button>
+            </div>
+        </div>
+
+        <div class="chat-container" id="chatBox">
+            <div class="message sofia-message">
+                ¡Hola! Soy Sofia, tu representante de atención al cliente. ¿En qué puedo ayudarte hoy?
+            </div>
+            <div class="typing-indicator" id="typingIndicator">
+                Sofia está escribiendo...
+            </div>
+        </div>
+
+        <div class="input-container">
+            <input type="text" id="userInput" placeholder="Escribe tu mensaje..." onkeypress="handleKeyPress(event)">
+            <button onclick="sendMessage()">Enviar</button>
+        </div>
+    </div>
+
+    <script>
+        let voiceSupported = false;
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            checkVoiceSupport();
+            document.getElementById('userInput').focus();
+        });
+
+        function checkVoiceSupport() {
+            voiceSupported = ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) && 
+                            'speechSynthesis' in window;
+            
+            if (voiceSupported) {
+                document.querySelector('.status-indicator').textContent = '🟢 Voz activa';
+                document.querySelector('.status-indicator').style.background = 'rgba(46, 204, 113, 0.3)';
+            }
+        }
+
+        function startVoiceRecognition() {
+            if (!voiceSupported) {
+                alert('El reconocimiento de voz no es compatible con tu navegador. Usa Chrome o Edge.');
+                return;
+            }
+
+            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = 'es-ES';
+            recognition.continuous = false;
+            
+            recognition.onstart = function() {
+                document.getElementById('userInput').placeholder = "Escuchando...";
+            };
+            
+            recognition.onresult = function(event) {
+                const transcript = event.results[0][0].transcript;
+                document.getElementById('userInput').value = transcript;
+                document.getElementById('userInput').placeholder = "Escribe tu mensaje...";
+                sendMessage();
+            };
+            
+            recognition.onerror = function(event) {
+                document.getElementById('userInput').placeholder = "Escribe tu mensaje...";
+                alert('Error en reconocimiento: ' + event.error);
+            };
+            
+            recognition.start();
+        }
+
+        function speakText(text) {
+            if (!voiceSupported) return;
+            
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'es-ES';
+            utterance.rate = 1.0;
+            utterance.pitch = 1.0;
+            
+            speechSynthesis.speak(utterance);
+        }
+
+        function speakTest() {
+            speakText("Hola, soy Sofia. Bienvenido al chat con voz.");
+        }
+
+        function addMessage(message, isUser = false) {
+            const chatBox = document.getElementById('chatBox');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = isUser ? 'message user-message' : 'message sofia-message';
+            messageDiv.textContent = (isUser ? 'Tú: ' : 'Sofia: ') + message;
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function showTypingIndicator() {
+            document.getElementById('typingIndicator').style.display = 'block';
+            document.getElementById('chatBox').scrollTop = document.getElementById('chatBox').scrollHeight;
+        }
+
+        function hideTypingIndicator() {
+            document.getElementById('typingIndicator').style.display = 'none';
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('userInput');
+            const message = input.value.trim();
+            
+            if (message) {
+                addMessage(message, true);
+                input.value = '';
+                
+                showTypingIndicator();
+                
+                fetch('/chat', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ message: message })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    setTimeout(() => {
+                        hideTypingIndicator();
+                        addMessage(data.sofia, false);
+                        speakText(data.sofia);
+                    }, 1500);
+                })
+                .catch(error => {
+                    hideTypingIndicator();
+                    addMessage('Lo siento, hubo un error. Por favor intenta nuevamente.', false);
+                });
+            }
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+    </script>
+</body>
+</html>
