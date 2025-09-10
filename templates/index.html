@@ -2,95 +2,616 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sofia con Voz - Asistente Virtual</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sofia - Asistente Virtual</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
         body { 
             font-family: 'Arial', sans-serif; 
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0;
+            overflow: hidden;
         }
+        
         .container { 
-            background: white; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            width: 100%; max-width: 500px; overflow: hidden;
+            background: white; 
+            border-radius: 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+            width: 100%;
+            height: 100vh;
+            max-width: 100%;
+            max-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
         }
+        
         .header { 
-            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); color: white;
-            padding: 30px 20px; text-align: center; position: relative;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); 
+            color: white;
+            padding: 25px 15px 15px;
+            text-align: center;
+            position: relative;
+            flex-shrink: 0;
         }
+        
+        .logo-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 15px 0; /* Aumentado significativamente */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+            z-index: 10;
+        }
+        
+        .logo {
+            height: 45px; /* Aumentado significativamente */
+            width: auto;
+            max-width: 85%;
+        }
+        
+        .header-content {
+            margin-top: 70px; /* Espacio aumentado para el logo más grande */
+        }
+        
+        .avatar-container {
+            position: relative; 
+            margin: 5px auto 15px; 
+            width: 100px; 
+            height: 100px;
+        }
+        
         .avatar { 
-            width: 80px; height: 80px; background: rgba(255,255,255,0.2); border-radius: 50%;
-            margin: 0 auto 15px; display: flex; align-items: center; justify-content: center;
-            font-size: 35px; font-weight: bold; border: 3px solid rgba(255,255,255,0.3);
+            width: 100%; 
+            height: 100%; 
+            border-radius: 50%; 
+            border: 3px solid rgba(255,255,255,0.5);
+            background: #e0e0e0 url('foto.png') center/cover;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
-        h1 { font-size: 28px; margin-bottom: 5px; }
-        .subtitle { font-size: 14px; opacity: 0.9; margin-bottom: 10px; }
-        .voice-buttons { display: flex; gap: 10px; justify-content: center; margin-top: 10px; }
-        .voice-btn { 
-            background: rgba(255,255,255,0.2); border: 2px solid white; color: white;
-            padding: 8px 15px; border-radius: 20px; cursor: pointer; font-size: 12px; transition: all 0.3s;
+        
+        h1 { 
+            font-size: 24px; 
+            margin-bottom: 5px; 
+            font-weight: 600;
         }
-        .voice-btn:hover { background: white; color: #3498db; }
-        .chat-container { height: 400px; padding: 20px; overflow-y: auto; background: #f8f9fa; }
+        
+        .subtitle { 
+            font-size: 14px; 
+            opacity: 0.9; 
+            margin-bottom: 15px; 
+        }
+        
+        .talk-with {
+            font-weight: bold;
+            margin-top: 10px;
+            font-size: 16px;
+        }
+        
+        /* Tabs Navigation */
+        .tabs { 
+            display: flex; 
+            background: rgba(255,255,255,0.15); 
+            border-radius: 20px; 
+            padding: 3px; 
+            margin: 15px auto 0; 
+            width: 90%;
+        }
+        
+        .tab { 
+            flex: 1; 
+            text-align: center; 
+            padding: 8px 5px; 
+            border-radius: 20px; 
+            cursor: pointer; 
+            transition: all 0.3s;
+            font-size: 13px; 
+            font-weight: bold;
+        }
+        
+        .tab.active { 
+            background: white; 
+            color: #3498db; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        /* Tab Content */
+        .tab-content { 
+            display: none; 
+            padding: 15px;
+            flex-grow: 1;
+            overflow: hidden;
+            height: 100%;
+        }
+        
+        .tab-content.active { 
+            display: flex; 
+            flex-direction: column;
+        }
+        
+        /* Voice Tab */
+        .voice-tab-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .voice-title {
+            font-size: 18px; 
+            margin-bottom: 20px; 
+            color: #3498db;
+            font-weight: 600;
+        }
+        
+        .talk-button {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 18px 35px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            margin: 30px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .talk-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+        }
+        
+        .talk-button:active {
+            transform: translateY(1px);
+        }
+        
+        .voice-instructions {
+            margin-top: 25px; 
+            color: #777; 
+            font-size: 14px;
+            line-height: 1.5;
+            max-width: 300px;
+        }
+        
+        /* Chat Tab */
+        .chat-container { 
+            flex-grow: 1;
+            overflow-y: auto; 
+            background: #f8f9fa; 
+            border-radius: 10px; 
+            padding: 12px;
+            margin-bottom: 15px;
+        }
+        
         .message { 
-            margin-bottom: 15px; padding: 12px 15px; border-radius: 18px; max-width: 80%; word-wrap: break-word;
+            margin-bottom: 12px; 
+            padding: 10px 14px; 
+            border-radius: 18px; 
+            max-width: 85%; 
+            word-wrap: break-word;
+            font-size: 14px;
         }
+        
         .user-message { 
-            background: #3498db; color: white; margin-left: auto; border-bottom-right-radius: 5px;
+            background: #3498db; 
+            color: white; 
+            margin-left: auto; 
+            border-bottom-right-radius: 5px;
         }
+        
         .sofia-message { 
-            background: white; color: #2c3e50; border: 1px solid #e0e0e0; border-bottom-left-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            background: white; 
+            color: #2c3e50; 
+            border: 1px solid #e0e0e0; 
+            border-bottom-left-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
+        
+        /* Input Container - FIXED AT BOTTOM */
         .input-container { 
-            padding: 20px; background: white; border-top: 1px solid #e0e0e0; display: flex; gap: 10px;
+            padding: 12px 15px; 
+            background: white; 
+            border-top: 1px solid #e0e0e0; 
+            display: flex; 
+            gap: 10px;
+            align-items: center;
+            flex-shrink: 0;
+            width: 100%;
         }
+        
         input { 
-            flex: 1; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 25px; outline: none;
-            font-size: 14px; transition: border-color 0.3s;
+            flex: 1; 
+            padding: 12px 15px; 
+            border: 2px solid #e0e0e0; 
+            border-radius: 25px; 
+            outline: none;
+            font-size: 15px; 
+            transition: border-color 0.3s;
+            height: 45px;
         }
-        input:focus { border-color: #3498db; }
-        button { 
-            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); color: white; border: none;
-            border-radius: 25px; padding: 12px 25px; cursor: pointer; font-weight: bold; transition: transform 0.2s;
+        
+        input:focus { 
+            border-color: #3498db; 
         }
-        button:hover { transform: translateY(-2px); }
+        
+        .send-btn { 
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); 
+            color: white; 
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            cursor: pointer; 
+            font-weight: bold; 
+            transition: transform 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        
+        .send-btn:hover { 
+            transform: scale(1.05); 
+        }
+        
+        /* History Tab */
+        .history-container { 
+            flex-grow: 1;
+            overflow-y: auto; 
+        }
+        
+        .history-item { 
+            padding: 12px; 
+            border-bottom: 1px solid #eee; 
+            display: flex; 
+            align-items: center;
+        }
+        
+        .history-item:last-child { 
+            border-bottom: none; 
+        }
+        
+        .history-icon { 
+            width: 40px; 
+            height: 40px; 
+            border-radius: 50%; 
+            background: #f0f0f0; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+        
+        .history-content { 
+            flex: 1; 
+        }
+        
+        .history-title { 
+            font-weight: bold; 
+            margin-bottom: 3px; 
+            font-size: 14px;
+        }
+        
+        .history-desc {
+            font-size: 13px;
+            color: #555;
+            margin-bottom: 3px;
+        }
+        
+        .history-time { 
+            font-size: 11px; 
+            color: #888; 
+        }
+        
+        /* Indicators */
         .typing-indicator { 
-            display: none; padding: 10px 15px; background: white; border-radius: 18px; border: 1px solid #e0e0e0;
-            width: fit-content; margin-bottom: 15px; font-style: italic; color: #7f8c8d;
+            display: none; 
+            padding: 10px 14px; 
+            background: white; 
+            border-radius: 18px; 
+            border: 1px solid #e0e0e0;
+            width: fit-content; 
+            margin-bottom: 12px; 
+            font-style: italic; 
+            color: #7f8c8d;
+            font-size: 13px;
         }
+        
         .status-indicator { 
-            position: absolute; top: 10px; right: 10px; font-size: 10px; background: rgba(255,255,255,0.3);
-            padding: 4px 8px; border-radius: 10px;
+            position: absolute; 
+            top: 75px; /* Ajustado para estar debajo del logo más grande */
+            right: 10px; 
+            font-size: 10px; 
+            background: rgba(255,255,255,0.3);
+            padding: 4px 8px; 
+            border-radius: 10px;
+        }
+        
+        /* Media Queries for very small devices */
+        @media (max-height: 700px) {
+            .header {
+                padding: 25px 15px 12px;
+            }
+            
+            .logo {
+                height: 40px; /* Aumentado */
+            }
+            
+            .logo-container {
+                padding: 12px 0; /* Aumentado */
+            }
+            
+            .header-content {
+                margin-top: 60px; /* Ajustado */
+            }
+            
+            .avatar-container {
+                width: 85px;
+                height: 85px;
+                margin-bottom: 12px;
+            }
+            
+            h1 {
+                font-size: 22px;
+            }
+            
+            .subtitle {
+                font-size: 13px;
+            }
+            
+            .tab {
+                padding: 6px 5px;
+                font-size: 12px;
+            }
+            
+            .chat-container {
+                padding: 10px;
+            }
+            
+            .message {
+                padding: 8px 12px;
+                font-size: 13px;
+            }
+            
+            .talk-button {
+                padding: 15px 30px;
+                font-size: 16px;
+                margin: 20px 0;
+            }
+            
+            .status-indicator {
+                top: 60px; /* Ajustado */
+            }
+        }
+        
+        /* Landscape orientation */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .container {
+                height: 100vh;
+                border-radius: 0;
+            }
+            
+            .header {
+                padding: 15px 15px 10px;
+            }
+            
+            .logo-container {
+                padding: 10px 0; /* Aumentado */
+            }
+            
+            .logo {
+                height: 35px; /* Aumentado */
+            }
+            
+            .header-content {
+                margin-top: 50px; /* Ajustado */
+            }
+            
+            .avatar-container {
+                width: 60px;
+                height: 60px;
+                margin-bottom: 5px;
+                display: inline-block;
+                vertical-align: middle;
+                margin-right: 10px;
+            }
+            
+            .header-text {
+                display: inline-block;
+                vertical-align: middle;
+                text-align: left;
+            }
+            
+            h1 {
+                font-size: 18px;
+                margin-bottom: 0;
+            }
+            
+            .subtitle {
+                font-size: 11px;
+                margin-bottom: 0;
+            }
+            
+            .tabs {
+                width: auto;
+                display: inline-block;
+                margin-left: 10px;
+            }
+            
+            .voice-tab-content {
+                padding: 10px;
+            }
+            
+            .talk-button {
+                padding: 12px 25px;
+                font-size: 16px;
+                margin: 15px 0;
+            }
+            
+            .status-indicator {
+                top: 50px; /* Ajustado */
+            }
+        }
+        
+        /* For very small screens */
+        @media (max-width: 350px) {
+            .logo {
+                height: 38px; /* Aumentado significativamente */
+            }
+            
+            .logo-container {
+                padding: 12px 0; /* Aumentado */
+            }
+            
+            .header-content {
+                margin-top: 55px; /* Ajustado */
+            }
+            
+            .talk-button {
+                padding: 15px 25px;
+                font-size: 16px;
+            }
+            
+            .avatar-container {
+                width: 85px;
+                height: 85px;
+            }
+            
+            .status-indicator {
+                top: 55px; /* Ajustado */
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
+            <div class="logo-container">
+                <img src="logo.png" alt="Fusa Abogados" class="logo">
+            </div>
             <div class="status-indicator">🔴 Sin voz</div>
-            <div class="avatar">S</div>
-            <h1>Sofia 💡</h1>
-            <p class="subtitle">Representante de atención al cliente</p>
-            <div class="voice-buttons">
-                <button class="voice-btn" onclick="startVoiceRecognition()">🎤 Hablar</button>
-                <button class="voice-btn" onclick="speakTest()">🔊 Probar Voz</button>
+            
+            <div class="header-content">
+                <div class="avatar-container">
+                    <div class="avatar"></div>
+                </div>
+                <div class="header-text">
+                    <h1>Sofia</h1>
+                    <p class="subtitle">Representante de atención al cliente</p>
+                    <div class="talk-with"></div>
+                </div>
+                
+                <!-- Tabs Navigation -->
+                <div class="tabs">
+                    <div class="tab" data-tab="chat">Chat</div>
+                    <div class="tab active" data-tab="voice">Voz</div>
+                    <div class="tab" data-tab="history">Historial</div>
+                </div>
             </div>
         </div>
 
-        <div class="chat-container" id="chatBox">
-            <div class="message sofia-message">
-                ¡Hola! Soy Sofia, tu representante de atención al cliente. ¿En qué puedo ayudarte hoy?
+        <!-- Chat Tab Content -->
+        <div class="tab-content" id="chatTab">
+            <div class="chat-container" id="chatBox">
+                <div class="message sofia-message">
+                    ¡Hola! Soy Sofia, tu representante de atención al cliente. ¿En qué puedo ayudarte hoy?
+                </div>
+                <div class="typing-indicator" id="typingIndicator">
+                    Sofia está escribiendo...
+                </div>
             </div>
-            <div class="typing-indicator" id="typingIndicator">
-                Sofia está escribiendo...
+
+            <div class="input-container">
+                <input type="text" id="userInput" placeholder="Escribe tu mensaje..." onkeypress="handleKeyPress(event)">
+                <button class="send-btn" onclick="sendMessage()">→</button>
             </div>
         </div>
 
-        <div class="input-container">
-            <input type="text" id="userInput" placeholder="Escribe tu mensaje..." onkeypress="handleKeyPress(event)">
-            <button onclick="sendMessage()">Enviar</button>
+        <!-- Voice Tab Content - ABIERTA POR DEFECTO -->
+        <div class="tab-content active" id="voiceTab">
+            <div class="voice-tab-content">
+                <div class="voice-title">
+                </div>
+                
+                <button class="talk-button" onclick="startVoiceRecognition()">
+                    🎤 Hablar con Sofia
+                </button>
+                
+                <div class="voice-instructions">
+                    <p>Haz clic en el botón y permite el acceso al micrófono cuando te lo solicite el navegador.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- History Tab Content -->
+        <div class="tab-content" id="historyTab">
+            <div class="history-container">
+                <div class="history-item">
+                    <div class="history-icon">📞</div>
+                    <div class="history-content">
+                        <div class="history-title">Llamada de servicio</div>
+                        <div class="history-desc">Consulta sobre garantía de producto</div>
+                        <div class="history-time">Hace 2 horas</div>
+                    </div>
+                </div>
+                <div class="history-item">
+                    <div class="history-icon">💬</div>
+                    <div class="history-content">
+                        <div class="history-title">Chat en línea</div>
+                        <div class="history-desc">Solicitud de información de envío</div>
+                        <div class="history-time">Ayer</div>
+                    </div>
+                </div>
+                <div class="history-item">
+                    <div class="history-icon">📧</div>
+                    <div class="history-content">
+                        <div class="history-title">Correo electrónico</div>
+                        <div class="history-desc">Respuesta a consulta técnica</div>
+                        <div class="history-time">Hace 3 días</div>
+                    </div>
+                </div>
+                <div class="history-item">
+                    <div class="history-icon">📞</div>
+                    <div class="history-content">
+                        <div class="history-title">Llamada de seguimiento</div>
+                        <div class="history-desc">Satisfacción con el servicio</div>
+                        <div class="history-time">Hace 1 semana</div>
+                    </div>
+                </div>
+                <div class="history-item">
+                    <div class="history-icon">💬</div>
+                    <div class="history-content">
+                        <div class="history-title">Chat en línea</div>
+                        <div class="history-desc">Problema con facturación</div>
+                        <div class="history-time">Hace 2 semanas</div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -99,8 +620,41 @@
         
         document.addEventListener('DOMContentLoaded', function() {
             checkVoiceSupport();
-            document.getElementById('userInput').focus();
+            setupTabs();
+            
+            // Ajustar altura del contenedor de chat para dispositivos móviles
+            adjustChatHeight();
+            window.addEventListener('resize', adjustChatHeight);
         });
+
+        function adjustChatHeight() {
+            const chatContainer = document.getElementById('chatBox');
+            if (chatContainer) {
+                const headerHeight = document.querySelector('.header').offsetHeight;
+                const inputHeight = document.querySelector('.input-container').offsetHeight;
+                const windowHeight = window.innerHeight;
+                
+                chatContainer.style.height = (windowHeight - headerHeight - inputHeight - 30) + 'px';
+            }
+        }
+
+        function setupTabs() {
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Remove active class from all tabs and contents
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    
+                    // Add active class to clicked tab and corresponding content
+                    tab.classList.add('active');
+                    document.getElementById(tab.dataset.tab + 'Tab').classList.add('active');
+                    
+                    // Ajustar alturas después de cambiar pestaña
+                    setTimeout(adjustChatHeight, 50);
+                });
+            });
+        }
 
         function checkVoiceSupport() {
             voiceSupported = ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) && 
@@ -114,7 +668,7 @@
 
         function startVoiceRecognition() {
             if (!voiceSupported) {
-                alert('El reconocimiento de voz no es compatible con tu navegador. Usa Chrome o Edge.');
+                alert('El reconocimiento de voz no es compatible con tu navegador. Usa Chrome or Edge.');
                 return;
             }
 
@@ -152,15 +706,11 @@
             speechSynthesis.speak(utterance);
         }
 
-        function speakTest() {
-            speakText("Hola, soy Sofia. Bienvenido al chat con voz.");
-        }
-
         function addMessage(message, isUser = false) {
             const chatBox = document.getElementById('chatBox');
             const messageDiv = document.createElement('div');
             messageDiv.className = isUser ? 'message user-message' : 'message sofia-message';
-            messageDiv.textContent = (isUser ? 'Tú: ' : 'Sofia: ') + message;
+            messageDiv.textContent = message;
             chatBox.appendChild(messageDiv);
             chatBox.scrollTop = chatBox.scrollHeight;
         }
@@ -179,28 +729,30 @@
             const message = input.value.trim();
             
             if (message) {
-                addMessage(message, true);
+                addMessage('Tú: ' + message, true);
                 input.value = '';
                 
                 showTypingIndicator();
                 
-                fetch('/chat', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ message: message })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    setTimeout(() => {
-                        hideTypingIndicator();
-                        addMessage(data.sofia, false);
-                        speakText(data.sofia);
-                    }, 1500);
-                })
-                .catch(error => {
+                // Cambiar a la pestaña de chat si no está activa
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                document.querySelector('[data-tab="chat"]').classList.add('active');
+                document.getElementById('chatTab').classList.add('active');
+                
+                // Simular respuesta del servidor (en producción, reemplazar con fetch real)
+                setTimeout(() => {
                     hideTypingIndicator();
-                    addMessage('Lo siento, hubo un error. Por favor intenta nuevamente.', false);
-                });
+                    const responses = [
+                        "Entiendo tu consulta. Déjame verificar esa información para ti.",
+                        "Gracias por tu mensaje. Estoy buscando la mejor solución para tu caso.",
+                        "Comprendo tu situación. Permíteme ayudarte con eso.",
+                        "Excelente pregunta. Déjame consultar los detalles para darte una respuesta precisa."
+                    ];
+                    const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                    addMessage('Sofia: ' + randomResponse, false);
+                    speakText(randomResponse);
+                }, 1500);
             }
         }
 
