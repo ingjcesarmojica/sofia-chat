@@ -39,7 +39,7 @@
         .header { 
             background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); 
             color: white;
-            padding: 25px 15px 15px;
+            padding: 20px 15px 15px;
             text-align: center;
             position: relative;
             flex-shrink: 0;
@@ -51,7 +51,7 @@
             left: 0;
             right: 0;
             background: white;
-            padding: 15px 0; /* Aumentado significativamente */
+            padding: 12px 0;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -60,20 +60,20 @@
         }
         
         .logo {
-            height: 45px; /* Aumentado significativamente */
+            height: 35px;
             width: auto;
             max-width: 85%;
         }
         
         .header-content {
-            margin-top: 70px; /* Espacio aumentado para el logo más grande */
+            margin-top: 55px;
         }
         
         .avatar-container {
             position: relative; 
-            margin: 5px auto 15px; 
-            width: 100px; 
-            height: 100px;
+            margin: 0 auto 10px; 
+            width: 90px; 
+            height: 90px;
         }
         
         .avatar { 
@@ -81,12 +81,12 @@
             height: 100%; 
             border-radius: 50%; 
             border: 3px solid rgba(255,255,255,0.5);
-            background: #e0e0e0 url('templates/foto.png') center/cover;
+            background: #e0e0e0 url('https://sofia-chat-8wvi.onrender.com/templates/foto.png') center/cover;
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
         
         h1 { 
-            font-size: 24px; 
+            font-size: 22px; 
             margin-bottom: 5px; 
             font-weight: 600;
         }
@@ -94,13 +94,13 @@
         .subtitle { 
             font-size: 14px; 
             opacity: 0.9; 
-            margin-bottom: 15px; 
+            margin-bottom: 10px; 
         }
         
         .talk-with {
             font-weight: bold;
-            margin-top: 10px;
-            font-size: 16px;
+            margin-top: 8px;
+            font-size: 15px;
         }
         
         /* Tabs Navigation */
@@ -109,7 +109,7 @@
             background: rgba(255,255,255,0.15); 
             border-radius: 20px; 
             padding: 3px; 
-            margin: 15px auto 0; 
+            margin: 12px auto 0; 
             width: 90%;
         }
         
@@ -133,15 +133,14 @@
         /* Tab Content */
         .tab-content { 
             display: none; 
-            padding: 15px;
             flex-grow: 1;
             overflow: hidden;
             height: 100%;
+            flex-direction: column;
         }
         
         .tab-content.active { 
             display: flex; 
-            flex-direction: column;
         }
         
         /* Voice Tab */
@@ -150,9 +149,9 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            flex-grow: 1;
             padding: 20px;
             text-align: center;
+            height: 100%;
         }
         
         .voice-title {
@@ -167,13 +166,13 @@
             color: white;
             border: none;
             border-radius: 30px;
-            padding: 18px 35px;
-            font-size: 18px;
+            padding: 16px 30px;
+            font-size: 16px;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s;
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            margin: 30px 0;
+            margin: 25px 0;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -190,7 +189,7 @@
         }
         
         .voice-instructions {
-            margin-top: 25px; 
+            margin-top: 20px; 
             color: #777; 
             font-size: 14px;
             line-height: 1.5;
@@ -198,13 +197,18 @@
         }
         
         /* Chat Tab */
+        .chat-tab-content {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            padding: 0;
+        }
+        
         .chat-container { 
-            flex-grow: 1;
+            flex: 1;
             overflow-y: auto; 
             background: #f8f9fa; 
-            border-radius: 10px; 
-            padding: 12px;
-            margin-bottom: 15px;
+            padding: 15px;
         }
         
         .message { 
@@ -233,7 +237,7 @@
         
         /* Input Container - FIXED AT BOTTOM */
         .input-container { 
-            padding: 12px 15px; 
+            padding: 15px; 
             background: white; 
             border-top: 1px solid #e0e0e0; 
             display: flex; 
@@ -280,8 +284,9 @@
         
         /* History Tab */
         .history-container { 
-            flex-grow: 1;
+            height: 100%;
             overflow-y: auto; 
+            padding: 15px;
         }
         
         .history-item { 
@@ -344,7 +349,7 @@
         
         .status-indicator { 
             position: absolute; 
-            top: 75px; /* Ajustado para estar debajo del logo más grande */
+            top: 60px;
             right: 10px; 
             font-size: 10px; 
             background: rgba(255,255,255,0.3);
@@ -355,42 +360,46 @@
         /* Media Queries for very small devices */
         @media (max-height: 700px) {
             .header {
-                padding: 25px 15px 12px;
+                padding: 15px 15px 10px;
             }
             
             .logo {
-                height: 40px; /* Aumentado */
+                height: 30px;
             }
             
             .logo-container {
-                padding: 12px 0; /* Aumentado */
+                padding: 10px 0;
             }
             
             .header-content {
-                margin-top: 60px; /* Ajustado */
+                margin-top: 45px;
             }
             
             .avatar-container {
-                width: 85px;
-                height: 85px;
-                margin-bottom: 12px;
+                width: 75px;
+                height: 75px;
+                margin-bottom: 8px;
             }
             
             h1 {
-                font-size: 22px;
+                font-size: 20px;
             }
             
             .subtitle {
                 font-size: 13px;
             }
             
+            .talk-with {
+                font-size: 14px;
+            }
+            
             .tab {
-                padding: 6px 5px;
+                padding: 6px 4px;
                 font-size: 12px;
             }
             
             .chat-container {
-                padding: 10px;
+                padding: 12px;
             }
             
             .message {
@@ -399,13 +408,17 @@
             }
             
             .talk-button {
-                padding: 15px 30px;
-                font-size: 16px;
+                padding: 14px 25px;
+                font-size: 15px;
                 margin: 20px 0;
             }
             
             .status-indicator {
-                top: 60px; /* Ajustado */
+                top: 50px;
+            }
+            
+            .input-container {
+                padding: 12px;
             }
         }
         
@@ -417,19 +430,19 @@
             }
             
             .header {
-                padding: 15px 15px 10px;
+                padding: 10px 15px 8px;
             }
             
             .logo-container {
-                padding: 10px 0; /* Aumentado */
+                padding: 8px 0;
             }
             
             .logo {
-                height: 35px; /* Aumentado */
+                height: 28px;
             }
             
             .header-content {
-                margin-top: 50px; /* Ajustado */
+                margin-top: 40px;
             }
             
             .avatar-container {
@@ -457,6 +470,10 @@
                 margin-bottom: 0;
             }
             
+            .talk-with {
+                display: none;
+            }
+            
             .tabs {
                 width: auto;
                 display: inline-block;
@@ -468,42 +485,55 @@
             }
             
             .talk-button {
-                padding: 12px 25px;
-                font-size: 16px;
+                padding: 10px 20px;
+                font-size: 14px;
                 margin: 15px 0;
             }
             
             .status-indicator {
-                top: 50px; /* Ajustado */
+                top: 40px;
             }
         }
         
         /* For very small screens */
         @media (max-width: 350px) {
             .logo {
-                height: 38px; /* Aumentado significativamente */
+                height: 30px;
             }
             
             .logo-container {
-                padding: 12px 0; /* Aumentado */
+                padding: 10px 0;
             }
             
             .header-content {
-                margin-top: 55px; /* Ajustado */
-            }
-            
-            .talk-button {
-                padding: 15px 25px;
-                font-size: 16px;
+                margin-top: 45px;
             }
             
             .avatar-container {
-                width: 85px;
-                height: 85px;
+                width: 70px;
+                height: 70px;
+            }
+            
+            h1 {
+                font-size: 20px;
+            }
+            
+            .talk-button {
+                padding: 12px 20px;
+                font-size: 15px;
             }
             
             .status-indicator {
-                top: 55px; /* Ajustado */
+                top: 50px;
+            }
+            
+            .input-container {
+                padding: 10px;
+            }
+            
+            input {
+                padding: 10px 12px;
+                font-size: 14px;
             }
         }
     </style>
@@ -512,7 +542,7 @@
     <div class="container">
         <div class="header">
             <div class="logo-container">
-                <img src="templates/logo.png" alt="Fusa Abogados" class="logo">
+                <img src="https://sofia-chat-8wvi.onrender.com/templates/logo.png" alt="Fusa Abogados" class="logo">
             </div>
             <div class="status-indicator">🔴 Sin voz</div>
             
@@ -521,9 +551,9 @@
                     <div class="avatar"></div>
                 </div>
                 <div class="header-text">
-                    <h1>Sofia</h1>
+                    <h1>Sofia 💡</h1>
                     <p class="subtitle">Representante de atención al cliente</p>
-                    <div class="talk-with"></div>
+                    <div class="talk-with">- Hablar con Sofia</div>
                 </div>
                 
                 <!-- Tabs Navigation -->
@@ -537,18 +567,20 @@
 
         <!-- Chat Tab Content -->
         <div class="tab-content" id="chatTab">
-            <div class="chat-container" id="chatBox">
-                <div class="message sofia-message">
-                    ¡Hola! Soy Sofia, tu representante de atención al cliente. ¿En qué puedo ayudarte hoy?
+            <div class="chat-tab-content">
+                <div class="chat-container" id="chatBox">
+                    <div class="message sofia-message">
+                        ¡Hola! Soy Sofia, tu representante de atención al cliente. ¿En qué puedo ayudarte hoy?
+                    </div>
+                    <div class="typing-indicator" id="typingIndicator">
+                        Sofia está escribiendo...
+                    </div>
                 </div>
-                <div class="typing-indicator" id="typingIndicator">
-                    Sofia está escribiendo...
-                </div>
-            </div>
 
-            <div class="input-container">
-                <input type="text" id="userInput" placeholder="Escribe tu mensaje..." onkeypress="handleKeyPress(event)">
-                <button class="send-btn" onclick="sendMessage()">→</button>
+                <div class="input-container">
+                    <input type="text" id="userInput" placeholder="Escribe tu mensaje..." onkeypress="handleKeyPress(event)">
+                    <button class="send-btn" onclick="sendMessage()">→</button>
+                </div>
             </div>
         </div>
 
@@ -556,6 +588,7 @@
         <div class="tab-content active" id="voiceTab">
             <div class="voice-tab-content">
                 <div class="voice-title">
+                    Habla con Sofia usando tu voz
                 </div>
                 
                 <button class="talk-button" onclick="startVoiceRecognition()">
@@ -628,13 +661,13 @@
         });
 
         function adjustChatHeight() {
-            const chatContainer = document.getElementById('chatBox');
+            const chatContainer = document.querySelector('.chat-container');
             if (chatContainer) {
                 const headerHeight = document.querySelector('.header').offsetHeight;
                 const inputHeight = document.querySelector('.input-container').offsetHeight;
                 const windowHeight = window.innerHeight;
                 
-                chatContainer.style.height = (windowHeight - headerHeight - inputHeight - 30) + 'px';
+                chatContainer.style.height = (windowHeight - headerHeight - inputHeight - 5) + 'px';
             }
         }
 
@@ -668,7 +701,7 @@
 
         function startVoiceRecognition() {
             if (!voiceSupported) {
-                alert('El reconocimiento de voz no es compatible con tu navegador. Usa Chrome or Edge.');
+                alert('El reconocimiento de voz no es compatible con tu navegador. Usa Chrome o Edge.');
                 return;
             }
 
