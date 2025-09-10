@@ -14,43 +14,34 @@
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: white;
             min-height: 100vh;
             display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
+            flex-direction: column;
         }
         
         .container {
             background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
             width: 100%;
-            max-width: 500px;
-            overflow: hidden;
-            height: 90vh;
-            max-height: 700px;
+            height: 100vh;
             display: flex;
             flex-direction: column;
         }
         
         .header {
-            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
-            color: white;
-            padding: 20px;
+            background: white;
+            color: #2c3e50;
+            padding: 15px 20px 10px;
             text-align: center;
             position: relative;
             flex-shrink: 0;
+            border-bottom: 1px solid #e0e0e0;
         }
         
         .logo-container {
-            background: white;
-            padding: 12px 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.15);
             margin-bottom: 15px;
         }
         
@@ -70,30 +61,32 @@
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            border: 3px solid rgba(255,255,255,0.5);
+            border: 3px solid #e0e0e0;
             background: #e0e0e0 url('https://bidamericas.com/tusabogados/foto.png') center/cover;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
         
         h1 {
             font-size: 22px;
             margin-bottom: 5px;
             font-weight: 600;
+            color: #2c3e50;
         }
         
         .subtitle {
             font-size: 14px;
-            opacity: 0.9;
-            margin-bottom: 10px;
+            color: #7f8c8d;
+            margin-bottom: 15px;
         }
         
         .status-indicator {
             display: inline-block;
-            background: rgba(255,255,255,0.3);
+            background: #f1f2f6;
             padding: 5px 10px;
             border-radius: 15px;
             font-size: 11px;
             margin-top: 8px;
+            color: #7f8c8d;
         }
         
         .chat-container {
@@ -172,39 +165,8 @@
             border-color: #3498db;
         }
         
-        .voice-btn {
-            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 45px;
-            height: 45px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: transform 0.2s;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-shrink: 0;
-        }
-        
-        .voice-btn:hover, .voice-btn:active {
-            transform: scale(1.05);
-        }
-        
-        .voice-btn.listening {
-            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-            animation: pulse 1.5s infinite;
-        }
-        
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-        
         .send-btn {
-            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            background: #3498db;
             color: white;
             border: none;
             border-radius: 50%;
@@ -221,18 +183,75 @@
         
         .send-btn:hover {
             transform: scale(1.05);
+            background: #2980b9;
+        }
+        
+        /* Nuevo botón "Hablar con Sofia" */
+        .talk-button {
+            display: block;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 12px 25px;
+            margin: 10px auto 5px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 15px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .talk-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            background: #2980b9;
+        }
+        
+        .talk-button.listening {
+            background: #e74c3c;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        /* Barra de navegación inferior */
+        .nav-bottom {
+            display: flex;
+            justify-content: space-around;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+            padding: 10px 0;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px 15px;
+            color: #7f8c8d;
+            font-size: 12px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .nav-item.active {
+            color: #3498db;
+        }
+        
+        .nav-icon {
+            font-size: 20px;
+            margin-bottom: 4px;
         }
         
         /* Responsive para móviles */
         @media (max-width: 480px) {
-            .container {
-                height: 100vh;
-                max-height: none;
-                border-radius: 0;
-            }
-            
             .header {
-                padding: 15px;
+                padding: 15px 15px 10px;
             }
             
             .avatar-container {
@@ -258,9 +277,14 @@
                 font-size: 14px;
             }
             
-            .voice-btn, .send-btn {
+            .send-btn {
                 width: 40px;
                 height: 40px;
+            }
+            
+            .talk-button {
+                padding: 10px 20px;
+                font-size: 14px;
             }
         }
     </style>
@@ -279,6 +303,9 @@
                 <div class="header-text">
                     <h1>Sofia 💡</h1>
                     <p class="subtitle">Representante de atención al cliente</p>
+                    <button class="talk-button" id="talkButton" onclick="startVoiceRecognition()">
+                        🎤 Hablar con Sofia
+                    </button>
                     <div class="status-indicator" id="statusIndicator">🔴 Inicializando...</div>
                 </div>
             </div>
@@ -295,8 +322,22 @@
 
         <div class="input-container">
             <input type="text" id="userInput" placeholder="Escribe tu mensaje..." onkeypress="handleKeyPress(event)">
-            <button class="voice-btn" id="voiceButton" onclick="startVoiceRecognition()">🎤</button>
             <button class="send-btn" onclick="sendMessage()">→</button>
+        </div>
+
+        <div class="nav-bottom">
+            <div class="nav-item active">
+                <div class="nav-icon">💬</div>
+                <span>Chat</span>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">🎤</div>
+                <span>Voz</span>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">📋</div>
+                <span>Historial</span>
+            </div>
         </div>
     </div>
 
@@ -316,6 +357,16 @@
         
         document.addEventListener('DOMContentLoaded', function() {
             initializeApp();
+            
+            // Añadir funcionalidad a la navegación inferior
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    document.querySelectorAll('.nav-item').forEach(nav => {
+                        nav.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                });
+            });
         });
 
         function initializeApp() {
@@ -338,7 +389,7 @@
                 updateStatus('🟢 Sistema de voz activo');
             } else {
                 updateStatus('🔴 Voz no compatible');
-                document.getElementById('voiceButton').style.display = 'none';
+                document.getElementById('talkButton').style.display = 'none';
             }
         }
         
@@ -347,11 +398,14 @@
             indicator.textContent = message;
             
             if (message.includes('🟢')) {
-                indicator.style.background = 'rgba(46, 204, 113, 0.3)';
+                indicator.style.background = 'rgba(46, 204, 113, 0.2)';
+                indicator.style.color = '#27ae60';
             } else if (message.includes('🔴')) {
-                indicator.style.background = 'rgba(231, 76, 60, 0.3)';
+                indicator.style.background = 'rgba(231, 76, 60, 0.2)';
+                indicator.style.color = '#c0392b';
             } else {
-                indicator.style.background = 'rgba(255, 193, 7, 0.3)';
+                indicator.style.background = 'rgba(255, 193, 7, 0.2)';
+                indicator.style.color = '#d35400';
             }
         }
 
@@ -440,7 +494,7 @@
                 return;
             }
 
-            const voiceButton = document.getElementById('voiceButton');
+            const talkButton = document.getElementById('talkButton');
             
             if (recognition && recognition.isListening) {
                 recognition.stop();
@@ -453,7 +507,7 @@
             recognition.interimResults = false;
             
             recognition.onstart = function() {
-                voiceButton.classList.add('listening');
+                talkButton.classList.add('listening');
                 recognition.isListening = true;
                 updateStatus('🎤 Escuchando...');
             };
@@ -463,13 +517,13 @@
                 document.getElementById('userInput').value = transcript;
                 sendMessage();
                 
-                voiceButton.classList.remove('listening');
+                talkButton.classList.remove('listening');
                 recognition.isListening = false;
                 updateStatus('🟢 Voz lista');
             };
             
             recognition.onerror = function(event) {
-                voiceButton.classList.remove('listening');
+                talkButton.classList.remove('listening');
                 recognition.isListening = false;
                 
                 if (event.error !== 'no-speech' && event.error !== 'aborted') {
@@ -481,7 +535,7 @@
             };
             
             recognition.onend = function() {
-                voiceButton.classList.remove('listening');
+                talkButton.classList.remove('listening');
                 recognition.isListening = false;
                 updateStatus('🟢 Voz lista');
             };
