@@ -97,12 +97,6 @@
             margin-bottom: 10px; 
         }
         
-        .talk-with {
-            font-weight: bold;
-            margin-top: 8px;
-            font-size: 15px;
-        }
-        
         /* Tabs Navigation */
         .tabs { 
             display: flex; 
@@ -154,13 +148,6 @@
             height: 100%;
         }
         
-        .voice-title {
-            font-size: 18px; 
-            margin-bottom: 20px; 
-            color: #3498db;
-            font-weight: 600;
-        }
-        
         .talk-button {
             background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
             color: white;
@@ -188,24 +175,23 @@
             transform: translateY(1px);
         }
         
+        .talk-button.listening {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
         .voice-instructions {
             margin-top: 20px; 
             color: #777; 
             font-size: 14px;
             line-height: 1.5;
             max-width: 300px;
-        }
-        
-        /* Premium Badge */
-        .premium-badge {
-            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
-            color: #333;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 14px;
-            margin-top: 15px;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.2);
         }
         
         /* Chat Tab */
@@ -222,7 +208,7 @@
             overflow-y: auto; 
             background: #f8f9fa; 
             padding: 15px;
-            padding-bottom: 70px; /* Espacio para el input fijo */
+            padding-bottom: 70px;
         }
         
         .message { 
@@ -249,7 +235,7 @@
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
         
-        /* Input Container - FIXED AT BOTTOM */
+        /* Input Container */
         .input-container { 
             position: fixed;
             bottom: 0;
@@ -316,203 +302,61 @@
             font-size: 13px;
         }
         
-        .status-indicator { 
-            position: absolute; 
+        .status-indicator {
+            position: absolute;
             top: 60px;
-            right: 10px; 
-            font-size: 10px; 
+            right: 10px;
+            font-size: 10px;
             background: rgba(255,255,255,0.3);
-            padding: 4px 8px; 
+            padding: 4px 8px;
             border-radius: 10px;
         }
         
-        /* Media Queries for very small devices */
+        /* Media Queries responsive */
         @media (max-height: 700px) {
-            .header {
-                padding: 15px 15px 10px;
-            }
-            
-            .logo {
-                height: 30px;
-            }
-            
-            .logo-container {
-                padding: 10px 0;
-            }
-            
-            .header-content {
-                margin-top: 45px;
-            }
-            
-            .avatar-container {
-                width: 75px;
-                height: 75px;
-                margin-bottom: 8px;
-            }
-            
-            h1 {
-                font-size: 20px;
-            }
-            
-            .subtitle {
-                font-size: 13px;
-            }
-            
-            .talk-with {
-                font-size: 14px;
-            }
-            
-            .tab {
-                padding: 6px 4px;
-                font-size: 12px;
-            }
-            
-            .chat-container {
-                padding: 12px;
-                padding-bottom: 65px;
-            }
-            
-            .message {
-                padding: 8px 12px;
-                font-size: 13px;
-            }
-            
-            .talk-button {
-                padding: 14px 25px;
-                font-size: 15px;
-                margin: 20px 0;
-            }
-            
-            .status-indicator {
-                top: 50px;
-            }
-            
-            .input-container {
-                padding: 12px;
-            }
+            .header { padding: 15px 15px 10px; }
+            .logo { height: 30px; }
+            .logo-container { padding: 10px 0; }
+            .header-content { margin-top: 45px; }
+            .avatar-container { width: 75px; height: 75px; margin-bottom: 8px; }
+            h1 { font-size: 20px; }
+            .subtitle { font-size: 13px; }
+            .tab { padding: 6px 4px; font-size: 12px; }
+            .chat-container { padding: 12px; padding-bottom: 65px; }
+            .message { padding: 8px 12px; font-size: 13px; }
+            .talk-button { padding: 14px 25px; font-size: 15px; margin: 20px 0; }
+            .status-indicator { top: 50px; }
+            .input-container { padding: 12px; }
         }
         
-        /* Landscape orientation */
         @media (max-height: 500px) and (orientation: landscape) {
-            .container {
-                height: 100vh;
-                border-radius: 0;
-            }
-            
-            .header {
-                padding: 10px 15px 8px;
-            }
-            
-            .logo-container {
-                padding: 8px 0;
-            }
-            
-            .logo {
-                height: 28px;
-            }
-            
-            .header-content {
-                margin-top: 40px;
-            }
-            
-            .avatar-container {
-                width: 60px;
-                height: 60px;
-                margin-bottom: 5px;
-                display: inline-block;
-                vertical-align: middle;
-                margin-right: 10px;
-            }
-            
-            .header-text {
-                display: inline-block;
-                vertical-align: middle;
-                text-align: left;
-            }
-            
-            h1 {
-                font-size: 18px;
-                margin-bottom: 0;
-            }
-            
-            .subtitle {
-                font-size: 11px;
-                margin-bottom: 0;
-            }
-            
-            .talk-with {
-                display: none;
-            }
-            
-            .tabs {
-                width: auto;
-                display: inline-block;
-                margin-left: 10px;
-            }
-            
-            .voice-tab-content {
-                padding: 10px;
-            }
-            
-            .talk-button {
-                padding: 10px 20px;
-                font-size: 14px;
-                margin: 15px 0;
-            }
-            
-            .status-indicator {
-                top: 40px;
-            }
-            
-            .chat-container {
-                padding-bottom: 60px;
-            }
+            .container { height: 100vh; border-radius: 0; }
+            .header { padding: 10px 15px 8px; }
+            .logo-container { padding: 8px 0; }
+            .logo { height: 28px; }
+            .header-content { margin-top: 40px; }
+            .avatar-container { width: 60px; height: 60px; margin-bottom: 5px; display: inline-block; vertical-align: middle; margin-right: 10px; }
+            .header-text { display: inline-block; vertical-align: middle; text-align: left; }
+            h1 { font-size: 18px; margin-bottom: 0; }
+            .subtitle { font-size: 11px; margin-bottom: 0; }
+            .tabs { width: auto; display: inline-block; margin-left: 10px; }
+            .voice-tab-content { padding: 10px; }
+            .talk-button { padding: 10px 20px; font-size: 14px; margin: 15px 0; }
+            .status-indicator { top: 40px; }
+            .chat-container { padding-bottom: 60px; }
         }
         
-        /* For very small screens */
         @media (max-width: 350px) {
-            .logo {
-                height: 30px;
-            }
-            
-            .logo-container {
-                padding: 10px 0;
-            }
-            
-            .header-content {
-                margin-top: 45px;
-            }
-            
-            .avatar-container {
-                width: 70px;
-                height: 70px;
-            }
-            
-            h1 {
-                font-size: 20px;
-            }
-            
-            .talk-button {
-                padding: 12px 20px;
-                font-size: 15px;
-            }
-            
-            .status-indicator {
-                top: 50px;
-            }
-            
-            .input-container {
-                padding: 10px;
-            }
-            
-            input {
-                padding: 10px 12px;
-                font-size: 14px;
-            }
-            
-            .chat-container {
-                padding-bottom: 60px;
-            }
+            .logo { height: 30px; }
+            .logo-container { padding: 10px 0; }
+            .header-content { margin-top: 45px; }
+            .avatar-container { width: 70px; height: 70px; }
+            h1 { font-size: 20px; }
+            .talk-button { padding: 12px 20px; font-size: 15px; }
+            .status-indicator { top: 50px; }
+            .input-container { padding: 10px; }
+            input { padding: 10px 12px; font-size: 14px; }
+            .chat-container { padding-bottom: 60px; }
         }
     </style>
 </head>
@@ -522,7 +366,7 @@
             <div class="logo-container">
                 <img src="https://bidamericas.com/tusabogados/logo.png" alt="Fusa Abogados" class="logo">
             </div>
-            <div class="status-indicator">🔴 Sin voz</div>
+            <div class="status-indicator" id="statusIndicator">🔴 Cargando voz...</div>
             
             <div class="header-content">
                 <div class="avatar-container">
@@ -533,7 +377,7 @@
                     <p class="subtitle">Representante de atención al cliente</p>
                 </div>
                 
-                <!-- Tabs Navigation - Eliminada la pestaña de historial -->
+                <!-- Tabs Navigation -->
                 <div class="tabs">
                     <div class="tab" data-tab="chat">Chat</div>
                     <div class="tab active" data-tab="voice">Voz</div>
@@ -560,21 +404,15 @@
             </div>
         </div>
 
-        <!-- Voice Tab Content - ABIERTA POR DEFECTO -->
+        <!-- Voice Tab Content -->
         <div class="tab-content active" id="voiceTab">
             <div class="voice-tab-content">
-
-                <button class="talk-button" onclick="startVoiceRecognition()">
+                <button class="talk-button" id="talkButton" onclick="startVoiceRecognition()">
                     🎤 Hablar con Sofia
                 </button>
                 
-                <div class="premium-badge">
-                    🔊 Voz Premium: es-US-News-F
-                </div>
-                
                 <div class="voice-instructions">
-                    <p>Haz clic en el botón y permite el acceso al micrófono cuando te lo solicite el navegador.</p>
-                    <p><strong>Disfruta de nuestra voz de alta calidad con tecnología Google TTS</strong></p>
+                    <p>Haz clic en el botón y permite el acceso al micrófono cuando te lo solicite el navegador. Sofia responderá con una voz latina cálida y profesional.</p>
                 </div>
             </div>
         </div>
@@ -582,23 +420,191 @@
 
     <script>
         let voiceSupported = false;
+        let recognition = null;
+        let selectedVoice = null;
+        let isVoicesLoaded = false;
         
-        // API Key fija integrada (reemplaza con tu API Key real de Google Cloud)
-        const GOOGLE_TTS_API_KEY = "AIzaSyDaB1orty87FUIlKzKtAcDVi5xG2g4QzfU";
-        // Voz seleccionada: es-US-News-F (Voz femenina de noticias en español de EE.UU.)
-        const VOICE_NAME = "es-US-News-F";
+        // Configuración específica de voz según la imagen
+        const VOICE_SETTINGS = {
+            pitch: 1.1,        // Tono de voz: 1.1
+            rate: 1.1,         // Velocidad: 1.1
+            volume: 1.0,
+            preferredLang: 'es-US'  // Idioma: es-US (Español Estados Unidos)
+        };
         
         document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+        });
+
+        function initializeApp() {
             checkVoiceSupport();
             setupTabs();
-            
-            // Ajustar altura del contenedor de chat para dispositivos móviles
+            loadOptimalVoice();
             adjustChatHeight();
-            window.addEventListener('resize', adjustChatHeight);
             
-            // Ajustar cuando el teclado aparece/desaparece
+            window.addEventListener('resize', adjustChatHeight);
             window.addEventListener('orientationchange', adjustChatHeight);
-        });
+        }
+
+        function checkVoiceSupport() {
+            voiceSupported = ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window);
+            const speechSupported = 'speechSynthesis' in window;
+            
+            if (voiceSupported && speechSupported) {
+                updateStatus('🟢 Sistema de voz activo');
+            } else {
+                updateStatus('🔴 Voz no compatible');
+            }
+        }
+        
+        function updateStatus(message) {
+            const indicator = document.getElementById('statusIndicator');
+            indicator.textContent = message;
+            
+            if (message.includes('🟢')) {
+                indicator.style.background = 'rgba(46, 204, 113, 0.3)';
+            } else if (message.includes('🔴')) {
+                indicator.style.background = 'rgba(231, 76, 60, 0.3)';
+            } else {
+                indicator.style.background = 'rgba(255, 193, 7, 0.3)';
+            }
+        }
+
+        function loadOptimalVoice() {
+            let attempts = 0;
+            const maxAttempts = 3;
+            
+            function tryLoadVoices() {
+                attempts++;
+                const voices = speechSynthesis.getVoices();
+                
+                if (voices.length > 0) {
+                    selectBestVoice(voices);
+                    isVoicesLoaded = true;
+                } else if (attempts < maxAttempts) {
+                    setTimeout(tryLoadVoices, 500);
+                } else {
+                    updateStatus('⚠️ Usando voz por defecto');
+                }
+            }
+            
+            tryLoadVoices();
+            
+            speechSynthesis.addEventListener('voiceschanged', () => {
+                if (!isVoicesLoaded) {
+                    tryLoadVoices();
+                }
+            });
+        }
+
+        function selectBestVoice(voices) {
+            // Priorizar voces en español de Estados Unidos (es-US)
+            let bestVoice = null;
+            let bestScore = 0;
+            
+            voices.forEach(voice => {
+                let score = 0;
+                const name = voice.name.toLowerCase();
+                const lang = voice.lang.toLowerCase();
+                
+                // Priorizar es-US (Español Estados Unidos)
+                if (lang === 'es-us') score += 100;
+                else if (lang.startsWith('es-')) score += 50;
+                else if (lang.includes('spanish') || lang.includes('español')) score += 30;
+                
+                // Puntuar por características femeninas
+                if (name.includes('female') || name.includes('mujer')) score += 15;
+                if (name.includes('sabina') || name.includes('helena')) score += 20;
+                if (name.includes('mónica') || name.includes('lucía')) score += 18;
+                if (name.includes('paloma') || name.includes('sofia')) score += 16;
+                if (name.includes('dalia') || name.includes('elena')) score += 14;
+                
+                // Puntuar por calidad
+                if (name.includes('neural') || name.includes('premium')) score += 10;
+                if (voice.localService) score += 5;
+                
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestVoice = voice;
+                }
+            });
+            
+            if (bestVoice) {
+                selectedVoice = bestVoice;
+                updateStatus(`🎤 Voz: ${bestVoice.name.split(' ')[0]} (${bestVoice.lang})`);
+                console.log('Voz seleccionada:', bestVoice.name, bestVoice.lang);
+                
+                // Probar la voz con el mensaje específico
+                setTimeout(() => {
+                    speakText("Hola, mi nombre es Sofia. Soy tu asistente virtual con una voz latina cálida y profesional. ¿En qué puedo ayudarte hoy?");
+                }, 500);
+            } else {
+                // Fallback a la primera voz disponible
+                selectedVoice = voices[0];
+                updateStatus('⚠️ Usando voz disponible');
+            }
+        }
+
+        function speakText(text) {
+            if (!selectedVoice) {
+                console.log('Voz no disponible, intentando cargar...');
+                loadOptimalVoice();
+                setTimeout(() => speakText(text), 1000);
+                return;
+            }
+            
+            // Cancelar cualquier síntesis previa
+            speechSynthesis.cancel();
+            
+            setTimeout(() => {
+                const utterance = new SpeechSynthesisUtterance(text);
+                
+                // Aplicar la configuración específica de la imagen
+                utterance.voice = selectedVoice;
+                utterance.pitch = VOICE_SETTINGS.pitch;  // Tono: 1.1
+                utterance.rate = VOICE_SETTINGS.rate;    // Velocidad: 1.1
+                utterance.volume = VOICE_SETTINGS.volume;
+                utterance.lang = selectedVoice.lang;
+                
+                // Eventos de control
+                utterance.onstart = () => {
+                    console.log(`🎤 Hablando con ${selectedVoice.name}`);
+                };
+                
+                utterance.onend = () => {
+                    console.log('✅ Reproducción completada');
+                };
+                
+                utterance.onerror = (event) => {
+                    console.error('Error en síntesis:', event.error);
+                    if (event.error === 'invalid-argument' || event.error === 'voice-unavailable') {
+                        // Recargar voces si hay problema
+                        loadOptimalVoice();
+                    }
+                };
+                
+                try {
+                    speechSynthesis.speak(utterance);
+                } catch (error) {
+                    console.error('Error crítico:', error);
+                }
+            }, 100);
+        }
+
+        function setupTabs() {
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    
+                    tab.classList.add('active');
+                    document.getElementById(tab.dataset.tab + 'Tab').classList.add('active');
+                    
+                    setTimeout(adjustChatHeight, 50);
+                });
+            });
+        }
 
         function adjustChatHeight() {
             const chatContainer = document.querySelector('.chat-container');
@@ -612,123 +618,61 @@
             }
         }
 
-        function setupTabs() {
-            const tabs = document.querySelectorAll('.tab');
-            tabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    // Remove active class from all tabs and contents
-                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-                    
-                    // Add active class to clicked tab and corresponding content
-                    tab.classList.add('active');
-                    document.getElementById(tab.dataset.tab + 'Tab').classList.add('active');
-                    
-                    // Ajustar alturas después de cambiar pestaña
-                    setTimeout(adjustChatHeight, 50);
-                });
-            });
-        }
-
-        function checkVoiceSupport() {
-            voiceSupported = ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window);
-            
-            if (voiceSupported) {
-                document.querySelector('.status-indicator').textContent = '🟢 Voz premium activa';
-                document.querySelector('.status-indicator').style.background = 'rgba(46, 204, 113, 0.3)';
-            }
-        }
-
         function startVoiceRecognition() {
             if (!voiceSupported) {
                 alert('El reconocimiento de voz no es compatible con tu navegador. Usa Chrome o Edge.');
                 return;
             }
 
-            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            const talkButton = document.getElementById('talkButton');
+            
+            if (recognition && recognition.isListening) {
+                recognition.stop();
+                return;
+            }
+
+            recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
             recognition.lang = 'es-ES';
             recognition.continuous = false;
+            recognition.interimResults = false;
             
             recognition.onstart = function() {
-                document.getElementById('userInput').placeholder = "Escuchando...";
+                talkButton.textContent = '🔴 Escuchando...';
+                talkButton.classList.add('listening');
+                recognition.isListening = true;
             };
             
             recognition.onresult = function(event) {
                 const transcript = event.results[0][0].transcript;
                 document.getElementById('userInput').value = transcript;
-                document.getElementById('userInput').placeholder = "Escribe tu mensaje...";
                 sendMessage();
+                
+                talkButton.textContent = '🎤 Hablar con Sofia';
+                talkButton.classList.remove('listening');
+                recognition.isListening = false;
             };
             
             recognition.onerror = function(event) {
-                document.getElementById('userInput').placeholder = "Escribe tu mensaje...";
-                alert('Error en reconocimiento: ' + event.error);
+                talkButton.textContent = '🎤 Hablar con Sofia';
+                talkButton.classList.remove('listening');
+                recognition.isListening = false;
+                
+                if (event.error !== 'no-speech' && event.error !== 'aborted') {
+                    alert('Error en reconocimiento: ' + event.error);
+                }
             };
             
-            recognition.start();
-        }
-
-        // Función mejorada para usar Google Text-to-Speech con API Key fija
-        function speakText(text) {
-            // Si no hay API Key configurada, usar síntesis de voz nativa
-            if (!GOOGLE_TTS_API_KEY || GOOGLE_TTS_API_KEY === "TU_API_KEY_AQUI") {
-                if ('speechSynthesis' in window) {
-                    const utterance = new SpeechSynthesisUtterance(text);
-                    utterance.lang = 'es-ES';
-                    utterance.rate = 1.0;
-                    window.speechSynthesis.speak(utterance);
-                }
-                return;
+            recognition.onend = function() {
+                talkButton.textContent = '🎤 Hablar con Sofia';
+                talkButton.classList.remove('listening');
+                recognition.isListening = false;
+            };
+            
+            try {
+                recognition.start();
+            } catch (error) {
+                alert('Error al activar el micrófono.');
             }
-            
-            // Usar Google Text-to-Speech API con la clave fija
-            const audio = new Audio();
-            const ttsUrl = `https://texttospeech.googleapis.com/v1/text:synthesize?key=${GOOGLE_TTS_API_KEY}`;
-            
-            // Configurar la solicitud a la API de Google TTS
-            const requestData = {
-                input: { text: text },
-                voice: { 
-                    languageCode: VOICE_NAME.substring(0, 5), 
-                    name: VOICE_NAME
-                },
-                audioConfig: { 
-                    audioEncoding: 'MP3',
-                    speakingRate: 1.0,
-                    pitch: 0.0,
-                    volumeGainDb: 0.0
-                }
-            };
-            
-            // Realizar la solicitud a la API
-            fetch(ttsUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(requestData)
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Error en la API: ' + response.status);
-                }
-                return response.json();
-            })
-            .then(data => {
-                // Decodificar el audio base64 y reproducirlo
-                audio.src = 'data:audio/mp3;base64,' + data.audioContent;
-                audio.play();
-            })
-            .catch(error => {
-                console.error('Error con Google TTS:', error);
-                // Fallback al sintetizador de voz nativo
-                if ('speechSynthesis' in window) {
-                    const utterance = new SpeechSynthesisUtterance(text);
-                    utterance.lang = 'es-ES';
-                    utterance.rate = 1.0;
-                    window.speechSynthesis.speak(utterance);
-                }
-            });
         }
 
         function addMessage(message, isUser = false) {
@@ -759,36 +703,79 @@
                 
                 showTypingIndicator();
                 
-                // Cambiar a la pestaña de chat si no está activa
+                // Cambiar a la pestaña de chat
                 document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
                 document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
                 document.querySelector('[data-tab="chat"]').classList.add('active');
                 document.getElementById('chatTab').classList.add('active');
                 
-                // Simular respuesta del servidor (en producción, reemplazar con fetch real)
+                // Simular respuesta inteligente
                 setTimeout(() => {
                     hideTypingIndicator();
-                    const responses = [
-                        "Entiendo tu consulta. Déjame verificar esa información para ti.",
-                        "Gracias por tu mensaje. Estoy buscando la mejor solución para tu caso.",
-                        "Comprendo tu situación. Permíteme ayudarte con eso.",
-                        "Excelente pregunta. Déjame consultar los detalles para darte una respuesta precisa."
-                    ];
-                    const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-                    addMessage(randomResponse, false);
-                    speakText(randomResponse);
+                    const response = generateResponse(message);
+                    addMessage(response, false);
                     
-                    // Ajustar altura después de añadir mensajes
+                    // Hablar con la voz configurada
+                    speakText(response);
+                    
                     adjustChatHeight();
-                }, 1500);
+                }, Math.random() * 1000 + 1500);
             }
+        }
+        
+        function generateResponse(userMessage) {
+            const message = userMessage.toLowerCase();
+            
+            if (message.includes('hola') || message.includes('buenos') || message.includes('saludos')) {
+                const greetings = [
+                    "¡Hola! Es un placer saludarte. Soy Sofia y estoy aquí para ayudarte en lo que necesites.",
+                    "¡Buenos días! Soy Sofia, tu asistente virtual. ¿Cómo puedo hacer que tu día sea mejor?",
+                    "¡Hola! Me alegra mucho que te pongas en contacto conmigo. ¿En qué puedo asistirte hoy?"
+                ];
+                return greetings[Math.floor(Math.random() * greetings.length)];
+            }
+            
+            if (message.includes('gracias') || message.includes('te agradezco')) {
+                const thanks = [
+                    "¡De nada! Es un placer poder ayudarte. Estoy aquí cuando me necesites.",
+                    "No hay de qué agradecer. Me encanta poder asistirte en lo que requieras.",
+                    "¡Con mucho gusto! Siempre es un placer ayudar a nuestros clientes."
+                ];
+                return thanks[Math.floor(Math.random() * thanks.length)];
+            }
+            
+            if (message.includes('legal') || message.includes('abogado') || message.includes('derecho')) {
+                return "Entiendo que tienes una consulta legal. Nuestro equipo de abogados especializados puede brindarte la asesoría que necesitas. ¿Me podrías dar más detalles sobre tu caso?";
+            }
+            
+            if (message.includes('precio') || message.includes('costo') || message.includes('honorarios')) {
+                return "Te entiendo perfectamente. Los honorarios varían según la complejidad del caso. Te proporciono una consulta inicial sin costo para evaluar tu situación. ¿Te parece bien que programemos una cita?";
+            }
+            
+            // Respuestas generales
+            const generalResponses = [
+                "Comprendo tu situación. Déjame analizar tu consulta para brindarte la mejor asesoría posible.",
+                "Entiendo perfectamente lo que me comentas. Mi objetivo es ayudarte a resolver esto de la manera más eficiente.",
+                "Te escucho con atención. Cada caso es único y merece una atención personalizada.",
+                "Muchas gracias por confiar en nosotros. Estoy aquí para brindarte toda la información y apoyo que necesites."
+            ];
+            
+            return generalResponses[Math.floor(Math.random() * generalResponses.length)];
         }
 
         function handleKeyPress(event) {
             if (event.key === 'Enter') {
+                event.preventDefault();
                 sendMessage();
             }
         }
+        
+        // Cargar voces cuando el usuario interactúa por primera vez
+        document.addEventListener('click', function() {
+            if (!isVoicesLoaded) {
+                loadOptimalVoice();
+            }
+        }, { once: true });
     </script>
 </body>
 </html>
