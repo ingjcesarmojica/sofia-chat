@@ -196,6 +196,18 @@
             max-width: 300px;
         }
         
+        /* Premium Badge */
+        .premium-badge {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: #333;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+            margin-top: 15px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+        }
+        
         /* Chat Tab */
         .chat-tab-content {
             display: flex;
@@ -556,8 +568,13 @@
                     🎤 Hablar con Sofia
                 </button>
                 
+                <div class="premium-badge">
+                    🔊 Voz Premium: es-US-News-F
+                </div>
+                
                 <div class="voice-instructions">
                     <p>Haz clic en el botón y permite el acceso al micrófono cuando te lo solicite el navegador.</p>
+                    <p><strong>Disfruta de nuestra voz de alta calidad con tecnología Google TTS</strong></p>
                 </div>
             </div>
         </div>
@@ -565,6 +582,11 @@
 
     <script>
         let voiceSupported = false;
+        
+        // API Key fija integrada (reemplaza con tu API Key real de Google Cloud)
+        const GOOGLE_TTS_API_KEY = "AIzaSyDaB1orty87FUIlKzKtAcDVi5xG2g4QzfU";
+        // Voz seleccionada: es-US-News-F (Voz femenina de noticias en español de EE.UU.)
+        const VOICE_NAME = "es-US-News-F";
         
         document.addEventListener('DOMContentLoaded', function() {
             checkVoiceSupport();
@@ -609,11 +631,10 @@
         }
 
         function checkVoiceSupport() {
-            voiceSupported = ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) && 
-                            'speechSynthesis' in window;
+            voiceSupported = ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window);
             
             if (voiceSupported) {
-                document.querySelector('.status-indicator').textContent = '🟢 Voz activa';
+                document.querySelector('.status-indicator').textContent = '🟢 Voz premium activa';
                 document.querySelector('.status-indicator').style.background = 'rgba(46, 204, 113, 0.3)';
             }
         }
@@ -647,15 +668,67 @@
             recognition.start();
         }
 
+        // Función mejorada para usar Google Text-to-Speech con API Key fija
         function speakText(text) {
-            if (!voiceSupported) return;
+            // Si no hay API Key configurada, usar síntesis de voz nativa
+            if (!GOOGLE_TTS_API_KEY || GOOGLE_TTS_API_KEY === "TU_API_KEY_AQUI") {
+                if ('speechSynthesis' in window) {
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.lang = 'es-ES';
+                    utterance.rate = 1.0;
+                    window.speechSynthesis.speak(utterance);
+                }
+                return;
+            }
             
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'es-ES';
-            utterance.rate = 1.0;
-            utterance.pitch = 1.0;
+            // Usar Google Text-to-Speech API con la clave fija
+            const audio = new Audio();
+            const ttsUrl = `https://texttospeech.googleapis.com/v1/text:synthesize?key=${GOOGLE_TTS_API_KEY}`;
             
-            speechSynthesis.speak(utterance);
+            // Configurar la solicitud a la API de Google TTS
+            const requestData = {
+                input: { text: text },
+                voice: { 
+                    languageCode: VOICE_NAME.substring(0, 5), 
+                    name: VOICE_NAME
+                },
+                audioConfig: { 
+                    audioEncoding: 'MP3',
+                    speakingRate: 1.0,
+                    pitch: 0.0,
+                    volumeGainDb: 0.0
+                }
+            };
+            
+            // Realizar la solicitud a la API
+            fetch(ttsUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error en la API: ' + response.status);
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Decodificar el audio base64 y reproducirlo
+                audio.src = 'data:audio/mp3;base64,' + data.audioContent;
+                audio.play();
+            })
+            .catch(error => {
+                console.error('Error con Google TTS:', error);
+                // Fallback al sintetizador de voz nativo
+                if ('speechSynthesis' in window) {
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.lang = 'es-ES';
+                    utterance.rate = 1.0;
+                    window.speechSynthesis.speak(utterance);
+                }
+            });
         }
 
         function addMessage(message, isUser = false) {
