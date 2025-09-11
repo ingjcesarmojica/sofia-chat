@@ -78,24 +78,34 @@ def chat():
         message_lower = message.lower()
         
         if any(word in message_lower for word in ['hola', 'buenos días', 'buenas tardes', 'saludos']):
-            response = "¡Hola! Soy Sofia, tu representante de atención al cliente. ¿En qué puedo ayudarte hoy?"
-        elif any(word in message_lower for word in ['abogado', 'legal', 'ley', 'juicio', 'demanda', 'abogados']):
-            response = "Entiendo que necesitas asesoría legal. Puedo ayudarte a conectar con nuestros abogados especializados. ¿Podrías contarme más detalles sobre tu situación?"
-        elif any(word in message_lower for word in ['precio', 'costo', 'tarifa', 'honorarios', 'cuánto cuesta']):
-            response = "Los honorarios varían según la complejidad del caso. Ofrecemos una consulta inicial gratuita para evaluar tu situación y proporcionarte un presupuesto transparente."
-        elif any(word in message_lower for word in ['contacto', 'teléfono', 'email', 'dirección', 'ubicación']):
-            response = "Puedes contactarnos al teléfono +34 912 345 678, por email a info@fusaabogados.com o visitarnos en Calle Principal 123, Madrid. ¿Te gustaría agendar una cita?"
+            response = "¡Hola! Un gusto saludarte. Somos la Fundación VANALI. Nuestro objetivo social es apoyar el emprendimiento de las mujeres cabeza de familia a través de cursos de manualidades."
+        elif any(word in message_lower for word in ['curso', 'cursos', 'ofrecen', 'qué hacen', 'muñeco', 'noel']):
+            response = "Actualmente estamos dictando dos cursos muy especiales y navideños:\n1. Curso de Muñeco Papá Noel.\n2. Curso de Muñeco Mamá Noel."
+        elif any(word in message_lower for word in ['dónde', 'ubicación', 'lugar', 'dirección', 'fusagasugá']):
+            response = "Los cursos son presenciales en la ciudad de Fusagasugá. Las clases se dictan en el Conjunto Andalucía, ubicado en el barrio Gaitán, específicamente frente al Colegio Manuel Humberto. ¡Es muy fácil de encontrar!"
+        elif any(word in message_lower for word in ['profesor', 'profesora', 'quién enseña', 'imparte', 'rocío']):
+            response = "Nuestros cursos son impartidos por la profesora Rocío, una experta en creación de muñecos y manualidades con más de 20 años de experiencia. ¡Aprenderás muchísimo con ella!"
+        elif any(word in message_lower for word in ['inscribir', 'inscripción', 'requisitos', 'cómo me inscribo']):
+            response = "Lo primero es realizar tu inscripción a través de nuestros canales de servicio oficiales. Con gusto te puedo proporcionar los contactos para que completes tu proceso."
+        elif any(word in message_lower for word in ['materiales', 'incluidos', 'comprar', 'llevar']):
+            response = "Para que te centres solo en aprender, el valor del curso incluye todos los materiales necesarios para elaborar tus muñecos. Sin embargo, si lo prefieres, también puedes adquirirlos por tu cuenta."
+        elif any(word in message_lower for word in ['dura', 'duración', 'horas', 'clases', 'semanas']):
+            response = "La duración es la siguiente:\n- Curso de Papá Noel: 4 clases de 2 horas cada una.\n- Curso de Mamá Noel: 5 clases de 2 horas cada una.\nAmbos se pueden tomar los días martes y jueves."
+        elif any(word in message_lower for word in ['horario', 'horarios', 'cuándo', 'días', 'tarde', 'mañana']):
+            response = "Tenemos dos horarios disponibles para tu comodidad:\n1. Horario de la mañana: de 9:00 a. m. a 11:00 a. m., de lunes a viernes.\n2. Horario de la tarde: de 3:00 p. m. a 5:00 p. m., de lunes a viernes."
+        elif any(word in message_lower for word in ['certificado', 'premio', 'recibo', 'finalizar', 'ganador']):
+            response = "¡Por supuesto! Al finalizar, recibirás un certificado que acredita el curso recibido. Además, ¡hay un premio especial si tu muñeco es calificado como el ganador del curso!"
+        elif any(word in message_lower for word in ['precio', 'costo', 'valor', 'cuánto cuesta', 'tarifa']):
+            response = "Los precios, que incluyen los materiales, son los siguientes:\n\nPara Papá Noel:\n- Tamaño grande (1 metro con 20 cm): $110.000 pesos.\n- Tamaño mediano (60 cm): $90.000 pesos.\n\nPara Mamá Noel:\n- Tamaño grande (1 metro con 20 cm): $120.000 pesos.\n- Tamaño mediano (60 cm): $100.000 pesos."
         elif any(word in message_lower for word in ['gracias', 'agradecer', 'amable', 'thanks']):
             response = "¡Es un placer ayudarte! Estoy aquí para lo que necesites. ¿Hay algo más en lo que pueda asistirte?"
-        elif any(word in message_lower for word in ['horario', 'hora', 'días', 'atención']):
-            response = "Nuestro horario de atención es de lunes a viernes de 9:00 a 18:00 horas. ¿En qué horario prefieres que te contactemos?"
         else:
             responses = [
-                "Entiendo tu consulta. Déjame verificar esa información para ti.",
-                "Gracias por tu mensaje. Estoy buscando la mejor solución para tu caso.",
-                "Comprendo tu situación. Permíteme ayudarte con eso.",
-                "Excelente pregunta. Déjame consultar los detalles para darte una respuesta precisa.",
-                "Tomo nota de tu consulta. Estoy procesando la información para brindarte la mejor asistencia."
+                "Entiendo tu consulta sobre nuestros cursos. Déjame verificar esa información para ti.",
+                "Gracias por tu mensaje. Estoy buscando la mejor información sobre nuestros cursos para ayudarte.",
+                "Comprendo tu pregunta sobre la Fundación VANALI. Permíteme ayudarte con eso.",
+                "Excelente pregunta sobre nuestros cursos. Déjame consultar los detalles para darte una respuesta precisa.",
+                "Tomo nota de tu consulta. Estoy procesando la información para brindarte la mejor asistencia sobre nuestros cursos."
             ]
             response = responses[len(message) % len(responses)]
         
@@ -117,5 +127,3 @@ def health_check():
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=False)
-
-
