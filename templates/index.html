@@ -942,7 +942,75 @@
             document.getElementById('typingIndicator').style.display = 'none';
         }
 
-        function sendMessage() {
+   function sendMessage() {
+        const input = document.getElementById('userInput');
+        const message = input.value.trim();
+        
+        if (message) {
+            addMessage(message, true);
+            input.value = '';
+            
+            showTypingIndicator();
+            
+            // Enviar mensaje al backend en lugar de procesarlo localmente
+            fetch('/api/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message: message })
+            })
+            .then(response => response.json())
+            .then(data => {
+                hideTypingIndicator();
+                
+                if (data.error) {
+                    addMessage("Lo siento, hubo un error procesando tu solicitud. Por favor, intenta nuevamente.", false);
+                    console.error('Error from backend:', data.error);
+                    return;
+                }
+                
+                // Mostrar la respuesta del backend
+                addMessage(data.response, false);
+                
+                // Generar audio de la respuesta
+                generateAndPlayAudio(data.response);
+                
+                // Detectar si la respuesta requiere mostrar contenido adicional
+                if (message.toLowerCase().includes('material') || 
+                    message.toLowerCase().includes('materiales') ||
+                    message.toLowerCase().includes('fotos') ||
+                    message.toLowerCase().includes('imágenes') ||
+                    message.toLowerCase().includes('imagenes')) {
+                    showMaterials();
+                }
+                else if (message.toLowerCase().includes('registro') || 
+                         message.toLowerCase().includes('registrarse') ||
+                         message.toLowerCase().includes('inscripción') ||
+                         message.toLowerCase().includes('inscribirse') ||
+                         message.toLowerCase().includes('matricular') ||
+                         message.toLowerCase().includes('formulario')) {
+                    showRegistrationForm();
+                }
+                else if (message.toLowerCase().includes('curso') || 
+                         message.toLowerCase().includes('cursos') ||
+                         message.toLowerCase().includes('otros') ||
+                         message.toLowerCase().includes('qué cursos') ||
+                         message.toLowerCase().includes('que cursos') ||
+                         message.toLowerCase().includes('qué más') ||
+                         message.toLowerCase().includes('que más') ||
+                         message.toLowerCase().includes('disponibles') ||
+                         message.toLowerCase().includes('ofrecen')) {
+                    showOtherCourses();
+                }
+            })
+            .catch(error => {
+                hideTypingIndicator();
+                addMessage("Lo siento, hubo un error de conexión. Por favor, intenta nuevamente.", false);
+                console.error('Error:', error);
+            });
+        }
+    }
             const input = document.getElementById('userInput');
             const message = input.value.trim();
             
