@@ -441,7 +441,22 @@
             <div class="message sofia-message">
                 ¡Hola! Soy Rocio, tu asistente virtual de la Fundación VANALI. Estoy aquí para ayudarte con información sobre nuestros cursos de manualidades. ¿En qué puedo ayudarte hoy?
             </div>
-            <!-- Este div se llenará con el video después del saludo -->
+            
+            <!-- Videos de Papá Noel y Mamá Noel -->
+            <div class="video-message">
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/xat_hEOVnIU" title="Papá Noel - Fundación VANALI" allowfullscreen></iframe>
+                </div>
+                <div class="video-caption">Papá Noel - Fundación VANALI</div>
+            </div>
+            
+            <div class="video-message">
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/rkl27vNtfKI" title="Mamá Noel - Fundación VANALI" allowfullscreen></iframe>
+                </div>
+                <div class="video-caption">Mamá Noel - Fundación VANALI</div>
+            </div>
+            
             <div class="typing-indicator" id="typingIndicator">
                 Rocio está escribiendo...
             </div>
@@ -478,46 +493,7 @@
                 const welcomeText = "¡Hola! Soy Rocio, tu asistente virtual de la Fundación VANALI. Estoy aquí para ayudarte con información sobre nuestros cursos de manualidades. ¿En qué puedo ayudarte hoy?";
                 // Enviar al backend para generar voz
                 generateAndPlayAudio(welcomeText);
-                
-                // Mostrar el video después del saludo (3 segundos después)
-                setTimeout(showWelcomeVideo, 3000);
             }, 1500);
-        }
-
-        function showWelcomeVideo() {
-            if (welcomeVideoShown) return;
-            
-            welcomeVideoShown = true;
-            const chatBox = document.getElementById('chatBox');
-            
-            // Crear elemento de video de YouTube
-            const videoMessage = document.createElement('div');
-            videoMessage.className = 'video-message';
-            
-            const videoContainer = document.createElement('div');
-            videoContainer.className = 'video-container';
-            
-            // Crear iframe de YouTube
-            const iframe = document.createElement('iframe');
-            iframe.src = 'https://www.youtube.com/embed/dAFtVudvthM';
-            iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
-            iframe.allowFullscreen = true;
-            iframe.title = 'Video de presentación - Fundación VANALI';
-            
-            const videoCaption = document.createElement('div');
-            videoCaption.className = 'video-caption';
-            videoCaption.textContent = 'Conoce más sobre nuestros cursos';
-            
-            videoContainer.appendChild(iframe);
-            videoMessage.appendChild(videoContainer);
-            videoMessage.appendChild(videoCaption);
-            
-            // Insertar después del mensaje de bienvenida
-            const welcomeMessage = document.querySelector('#chatBox .message');
-            chatBox.insertBefore(videoMessage, welcomeMessage.nextSibling);
-            
-            // Desplazar para mostrar el video
-            scrollToLatestMessage();
         }
 
         function setupViewportHandlers() {
