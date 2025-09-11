@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sofia - Asistente Virtual</title>
+    <title>Rocio - Asistente Virtual</title>
     <style>
         * {
             margin: 0;
@@ -26,6 +26,7 @@
             height: 100vh;
             display: flex;
             flex-direction: column;
+            position: relative;
         }
         
         .header {
@@ -62,7 +63,7 @@
             height: 100%;
             border-radius: 50%;
             border: 3px solid #e0e0e0;
-            background: #e0e0e0 url('https://bidamericas.com/tusabogados/foto.png') center/cover;
+            background: #e0e0e0 url('https://bidamericas.com/vanali/foto.png') center/cover;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
         
@@ -96,6 +97,8 @@
             padding: 15px;
             display: flex;
             flex-direction: column;
+            /* Aseguramos que el contenedor de chat pueda crecer */
+            min-height: 0;
         }
         
         .message {
@@ -141,84 +144,6 @@
             font-size: 13px;
         }
         
-        .input-container {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            padding: 15px;
-            background: white;
-            border-top: 1px solid #e0e0e0;
-            flex-shrink: 0;
-        }
-        
-        input {
-            flex: 1;
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 25px;
-            outline: none;
-            font-size: 15px;
-            transition: border-color 0.3s;
-        }
-        
-        input:focus {
-            border-color: #3498db;
-        }
-        
-        .send-btn {
-            background: #3498db;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 45px;
-            height: 45px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: transform 0.2s;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-shrink: 0;
-        }
-        
-        .send-btn:hover {
-            transform: scale(1.05);
-            background: #2980b9;
-        }
-        
-        /* Nuevo botón "Hablar con Sofia" */
-        .talk-button {
-            display: block;
-            background: #3498db;
-            color: white;
-            border: none;
-            border-radius: 25px;
-            padding: 12px 25px;
-            margin: 10px auto 5px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 15px;
-            transition: all 0.3s;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        
-        .talk-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-            background: #2980b9;
-        }
-        
-        .talk-button.listening {
-            background: #e74c3c;
-            animation: pulse 1.5s infinite;
-        }
-        
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-        
         /* Estilos mejorados para el área de entrada */
         .enhanced-input-container {
             display: flex;
@@ -227,6 +152,9 @@
             background: white;
             border-top: 1px solid #e0e0e0;
             flex-shrink: 0;
+            position: sticky;
+            bottom: 0;
+            z-index: 100;
         }
         
         .enhanced-input {
@@ -274,6 +202,39 @@
             transform: scale(0.95);
         }
         
+        /* Nuevo botón "Hablar con Rocio" */
+        .talk-button {
+            display: block;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 12px 25px;
+            margin: 10px auto 5px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 15px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .talk-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            background: #2980b9;
+        }
+        
+        .talk-button.listening {
+            background: #e74c3c;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
         /* Responsive para móviles */
         @media (max-width: 480px) {
             .header {
@@ -312,6 +273,15 @@
                 padding: 10px 20px;
                 font-size: 14px;
             }
+            
+            /* Ajustes específicos para cuando el teclado está visible */
+            .keyboard-visible .header {
+                display: none; /* Ocultar header cuando el teclado está visible */
+            }
+            
+            .keyboard-visible .chat-container {
+                padding-bottom: 5px;
+            }
         }
     </style>
 </head>
@@ -346,7 +316,7 @@
             </div>
         </div>
 
-        <div class="enhanced-input-container">
+        <div class="enhanced-input-container" id="inputContainer">
             <input type="text" class="enhanced-input" id="userInput" placeholder="Escribe tu mensaje aquí..." onkeypress="handleKeyPress(event)">
             <button class="enhanced-send-btn" onclick="sendMessage()">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -360,9 +330,11 @@
     <script>
         let voiceSupported = false;
         let recognition = null;
+        let isKeyboardVisible = false;
         
         document.addEventListener('DOMContentLoaded', function() {
             initializeApp();
+            setupViewportHandlers();
         });
 
         function initializeApp() {
@@ -375,6 +347,41 @@
                 // Enviar al backend para generar voz
                 generateAndPlayAudio(welcomeText);
             }, 1500);
+        }
+
+        function setupViewportHandlers() {
+            // Detectar cambios en la visualización del teclado en dispositivos móviles
+            const visualViewport = window.visualViewport;
+            
+            if (visualViewport) {
+                visualViewport.addEventListener('resize', function() {
+                    // Si la altura de la ventana visual es significativamente menor que la altura de la ventana,
+                    // asumimos que el teclado está visible
+                    const keyboardThreshold = window.innerHeight * 0.4;
+                    isKeyboardVisible = visualViewport.height < window.innerHeight - keyboardThreshold;
+                    
+                    if (isKeyboardVisible) {
+                        document.body.classList.add('keyboard-visible');
+                        // Desplazar el chat hacia arriba para mostrar los mensajes recientes
+                        scrollToLatestMessage();
+                    } else {
+                        document.body.classList.remove('keyboard-visible');
+                    }
+                });
+            }
+            
+            // Enfocar el input cuando se toca el área del chat (útil para iOS)
+            document.getElementById('chatBox').addEventListener('touchstart', function() {
+                document.getElementById('userInput').focus();
+            });
+        }
+
+        function scrollToLatestMessage() {
+            const chatBox = document.getElementById('chatBox');
+            // Pequeño retraso para asegurar que el teclado ya está visible
+            setTimeout(() => {
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }, 100);
         }
 
         function checkVoiceSupport() {
@@ -404,85 +411,85 @@
             }
         }
 
-       function generateAndPlayAudio(text) {
-    updateStatus('🔊 Generando audio...');
-    
-    fetch('/api/speak', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ text: text })
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        if (data.error) {
-            console.error('Error from server:', data.error);
-            updateStatus('❌ Error: ' + (data.error.message || data.error));
+        function generateAndPlayAudio(text) {
+            updateStatus('🔊 Generando audio...');
             
-            // Mostrar mensaje de error en el chat
-            addMessage("Lo siento, hubo un error generando la voz. Por favor, intenta nuevamente.", false);
-            return;
-        }
-        
-        if (data.audioContent || data.audioUrl) {
-            const audioUrl = data.audioUrl || `data:audio/mp3;base64,${data.audioContent}`;
-            const audio = new Audio(audioUrl);
-            
-            audio.onplay = function() {
-                updateStatus('🎵 Reproduciendo voz...');
-            };
-            
-            audio.onended = function() {
-                updateStatus('🟢 Voz lista');
-            };
-            
-            audio.onerror = function(e) {
-                console.error('Error playing audio:', e);
-                updateStatus('❌ Error reproduciendo audio');
-            };
-            
-            // Intentar reproducir
-            const playPromise = audio.play();
-            if (playPromise !== undefined) {
-                playPromise.catch(error => {
-                    console.log('Audio play blocked, requiring user interaction');
-                    updateStatus('🔇 Toca para escuchar');
+            fetch('/api/speak', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ text: text })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.error) {
+                    console.error('Error from server:', data.error);
+                    updateStatus('❌ Error: ' + (data.error.message || data.error));
                     
-                    // Crear botón para reproducir manualmente
-                    const playButton = document.createElement('button');
-                    playButton.textContent = '▶️ Escuchar respuesta';
-                    playButton.className = 'play-button';
-                    playButton.onclick = function() {
-                        audio.play();
-                        this.remove();
+                    // Mostrar mensaje de error en el chat
+                    addMessage("Lo siento, hubo un error generando la voz. Por favor, intenta nuevamente.", false);
+                    return;
+                }
+                
+                if (data.audioContent || data.audioUrl) {
+                    const audioUrl = data.audioUrl || `data:audio/mp3;base64,${data.audioContent}`;
+                    const audio = new Audio(audioUrl);
+                    
+                    audio.onplay = function() {
+                        updateStatus('🎵 Reproduciendo voz...');
                     };
                     
-                    // Añadir botón después del último mensaje
-                    const lastMessage = document.querySelector('#chatBox .message:last-child');
-                    if (lastMessage) {
-                        lastMessage.appendChild(playButton);
+                    audio.onended = function() {
+                        updateStatus('🟢 Voz lista');
+                    };
+                    
+                    audio.onerror = function(e) {
+                        console.error('Error playing audio:', e);
+                        updateStatus('❌ Error reproduciendo audio');
+                    };
+                    
+                    // Intentar reproducir
+                    const playPromise = audio.play();
+                    if (playPromise !== undefined) {
+                        playPromise.catch(error => {
+                            console.log('Audio play blocked, requiring user interaction');
+                            updateStatus('🔇 Toca para escuchar');
+                            
+                            // Crear botón para reproducir manualmente
+                            const playButton = document.createElement('button');
+                            playButton.textContent = '▶️ Escuchar respuesta';
+                            playButton.className = 'play-button';
+                            playButton.onclick = function() {
+                                audio.play();
+                                this.remove();
+                            };
+                            
+                            // Añadir botón después del último mensaje
+                            const lastMessage = document.querySelector('#chatBox .message:last-child');
+                            if (lastMessage) {
+                                lastMessage.appendChild(playButton);
+                            }
+                        });
                     }
-                });
-            }
-        } else {
-            console.error('No audio content received:', data);
-            updateStatus('❌ Error generando audio');
+                } else {
+                    console.error('No audio content received:', data);
+                    updateStatus('❌ Error generando audio');
+                }
+            })
+            .catch(error => {
+                console.error('Fetch error:', error);
+                updateStatus('❌ Error de conexión');
+                
+                // Mostrar mensaje de error en el chat
+                addMessage("Error de conexión con el servicio de voz. Por favor, intenta nuevamente.", false);
+            });
         }
-    })
-    .catch(error => {
-        console.error('Fetch error:', error);
-        updateStatus('❌ Error de conexión');
-        
-        // Mostrar mensaje de error en el chat
-        addMessage("Error de conexión con el servicio de voz. Por favor, intenta nuevamente.", false);
-    });
-}
 
         function startVoiceRecognition() {
             if (!voiceSupported) {
@@ -551,12 +558,14 @@
             messageDiv.className = isUser ? 'message user-message' : 'message sofia-message';
             messageDiv.textContent = message;
             chatBox.appendChild(messageDiv);
-            chatBox.scrollTop = chatBox.scrollHeight;
+            
+            // Asegurarse de que el nuevo mensaje sea visible
+            scrollToLatestMessage();
         }
 
         function showTypingIndicator() {
             document.getElementById('typingIndicator').style.display = 'block';
-            document.getElementById('chatBox').scrollTop = document.getElementById('chatBox').scrollHeight;
+            scrollToLatestMessage();
         }
 
         function hideTypingIndicator() {
