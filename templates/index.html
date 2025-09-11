@@ -97,7 +97,6 @@
             padding: 15px;
             display: flex;
             flex-direction: column;
-            /* Aseguramos que el contenedor de chat pueda crecer */
             min-height: 0;
         }
         
@@ -129,6 +128,38 @@
             border: 1px solid #e0e0e0;
             border-bottom-left-radius: 5px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        /* Estilos para el contenedor de video */
+        .video-message {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 10px;
+            margin-bottom: 12px;
+            max-width: 85%;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .video-container {
+            position: relative;
+            width: 100%;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .video-container iframe {
+            width: 100%;
+            height: 200px;
+            border: none;
+            border-radius: 8px;
+        }
+        
+        .video-caption {
+            padding: 8px 5px 0;
+            font-size: 13px;
+            color: #666;
+            text-align: center;
         }
         
         .typing-indicator {
@@ -171,7 +202,7 @@
         .enhanced-input:focus {
             border-color: #6b0366;
             background: white;
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+            box-shadow: 0 0 0 3px rgba(107, 3, 102, 0.2);
         }
         
         .enhanced-send-btn {
@@ -194,7 +225,7 @@
         
         .enhanced-send-btn:hover {
             transform: scale(1.05);
-            background: #6b0366;
+            background: #5a0255;
             box-shadow: 0 4px 8px rgba(0,0,0,0.15);
         }
         
@@ -221,7 +252,7 @@
         .talk-button:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-            background: #6b0366;
+            background: #5a0255;
         }
         
         .talk-button.listening {
@@ -259,6 +290,14 @@
                 padding: 8px 12px;
             }
             
+            .video-message {
+                max-width: 90%;
+            }
+            
+            .video-container iframe {
+                height: 180px;
+            }
+            
             .enhanced-input {
                 padding: 12px 14px;
                 font-size: 15px;
@@ -276,11 +315,17 @@
             
             /* Ajustes específicos para cuando el teclado está visible */
             .keyboard-visible .header {
-                display: none; /* Ocultar header cuando el teclado está visible */
+                display: none;
             }
             
             .keyboard-visible .chat-container {
                 padding-bottom: 5px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .video-container iframe {
+                height: 300px;
             }
         }
     </style>
@@ -311,6 +356,7 @@
             <div class="message sofia-message">
                 ¡Hola! Soy Rocio, tu asistente virtual de la Fundación VANALI. Estoy aquí para ayudarte con información sobre nuestros cursos de manualidades. ¿En qué puedo ayudarte hoy?
             </div>
+            <!-- Este div se llenará con el video después del saludo -->
             <div class="typing-indicator" id="typingIndicator">
                 Rocio está escribiendo...
             </div>
@@ -331,6 +377,7 @@
         let voiceSupported = false;
         let recognition = null;
         let isKeyboardVisible = false;
+        let welcomeVideoShown = false;
         
         document.addEventListener('DOMContentLoaded', function() {
             initializeApp();
@@ -346,23 +393,58 @@
                 const welcomeText = "¡Hola! Soy Rocio, tu asistente virtual de la Fundación VANALI. Estoy aquí para ayudarte con información sobre nuestros cursos de manualidades. ¿En qué puedo ayudarte hoy?";
                 // Enviar al backend para generar voz
                 generateAndPlayAudio(welcomeText);
+                
+                // Mostrar el video después del saludo (3 segundos después)
+                setTimeout(showWelcomeVideo, 3000);
             }, 1500);
         }
 
+        function showWelcomeVideo() {
+            if (welcomeVideoShown) return;
+            
+            welcomeVideoShown = true;
+            const chatBox = document.getElementById('chatBox');
+            
+            // Crear elemento de video de YouTube
+            const videoMessage = document.createElement('div');
+            videoMessage.className = 'video-message';
+            
+            const videoContainer = document.createElement('div');
+            videoContainer.className = 'video-container';
+            
+            // Crear iframe de YouTube
+            const iframe = document.createElement('iframe');
+            iframe.src = 'https://www.youtube.com/embed/dAFtVudvthM';
+            iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+            iframe.allowFullscreen = true;
+            iframe.title = 'Video de presentación - Fundación VANALI';
+            
+            const videoCaption = document.createElement('div');
+            videoCaption.className = 'video-caption';
+            videoCaption.textContent = 'Conoce más sobre nuestros cursos';
+            
+            videoContainer.appendChild(iframe);
+            videoMessage.appendChild(videoContainer);
+            videoMessage.appendChild(videoCaption);
+            
+            // Insertar después del mensaje de bienvenida
+            const welcomeMessage = document.querySelector('#chatBox .message');
+            chatBox.insertBefore(videoMessage, welcomeMessage.nextSibling);
+            
+            // Desplazar para mostrar el video
+            scrollToLatestMessage();
+        }
+
         function setupViewportHandlers() {
-            // Detectar cambios en la visualización del teclado en dispositivos móviles
             const visualViewport = window.visualViewport;
             
             if (visualViewport) {
                 visualViewport.addEventListener('resize', function() {
-                    // Si la altura de la ventana visual es significativamente menor que la altura de la ventana,
-                    // asumimos que el teclado está visible
                     const keyboardThreshold = window.innerHeight * 0.4;
                     isKeyboardVisible = visualViewport.height < window.innerHeight - keyboardThreshold;
                     
                     if (isKeyboardVisible) {
                         document.body.classList.add('keyboard-visible');
-                        // Desplazar el chat hacia arriba para mostrar los mensajes recientes
                         scrollToLatestMessage();
                     } else {
                         document.body.classList.remove('keyboard-visible');
@@ -370,7 +452,6 @@
                 });
             }
             
-            // Enfocar el input cuando se toca el área del chat (útil para iOS)
             document.getElementById('chatBox').addEventListener('touchstart', function() {
                 document.getElementById('userInput').focus();
             });
@@ -378,7 +459,6 @@
 
         function scrollToLatestMessage() {
             const chatBox = document.getElementById('chatBox');
-            // Pequeño retraso para asegurar que el teclado ya está visible
             setTimeout(() => {
                 chatBox.scrollTop = chatBox.scrollHeight;
             }, 100);
@@ -431,8 +511,6 @@
                 if (data.error) {
                     console.error('Error from server:', data.error);
                     updateStatus('❌ Error: ' + (data.error.message || data.error));
-                    
-                    // Mostrar mensaje de error en el chat
                     addMessage("Lo siento, hubo un error generando la voz. Por favor, intenta nuevamente.", false);
                     return;
                 }
@@ -454,14 +532,12 @@
                         updateStatus('❌ Error reproduciendo audio');
                     };
                     
-                    // Intentar reproducir
                     const playPromise = audio.play();
                     if (playPromise !== undefined) {
                         playPromise.catch(error => {
                             console.log('Audio play blocked, requiring user interaction');
                             updateStatus('🔇 Toca para escuchar');
                             
-                            // Crear botón para reproducir manualmente
                             const playButton = document.createElement('button');
                             playButton.textContent = '▶️ Escuchar respuesta';
                             playButton.className = 'play-button';
@@ -470,7 +546,6 @@
                                 this.remove();
                             };
                             
-                            // Añadir botón después del último mensaje
                             const lastMessage = document.querySelector('#chatBox .message:last-child');
                             if (lastMessage) {
                                 lastMessage.appendChild(playButton);
@@ -485,8 +560,6 @@
             .catch(error => {
                 console.error('Fetch error:', error);
                 updateStatus('❌ Error de conexión');
-                
-                // Mostrar mensaje de error en el chat
                 addMessage("Error de conexión con el servicio de voz. Por favor, intenta nuevamente.", false);
             });
         }
@@ -559,7 +632,6 @@
             messageDiv.textContent = message;
             chatBox.appendChild(messageDiv);
             
-            // Asegurarse de que el nuevo mensaje sea visible
             scrollToLatestMessage();
         }
 
@@ -582,7 +654,6 @@
                 
                 showTypingIndicator();
                 
-                // Enviar mensaje al backend para procesamiento
                 fetch('/api/chat', {
                     method: 'POST',
                     headers: {
@@ -595,7 +666,6 @@
                     hideTypingIndicator();
                     if (data.response) {
                         addMessage(data.response, false);
-                        // Generar y reproducir audio con la respuesta
                         generateAndPlayAudio(data.response);
                     } else {
                         addMessage("Lo siento, hubo un error procesando tu mensaje.", false);
@@ -604,7 +674,6 @@
                 .catch(error => {
                     hideTypingIndicator();
                     console.error('Error:', error);
-                    // Respuesta de respaldo si hay error en la conexión
                     const backupResponses = [
                         "Entiendo tu consulta sobre nuestros cursos. Déjame verificar esa información para ti.",
                         "Gracias por tu mensaje. Estoy buscando la mejor información sobre nuestros cursos para ayudarte.",
