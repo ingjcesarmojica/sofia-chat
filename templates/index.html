@@ -219,33 +219,59 @@
             100% { transform: scale(1); }
         }
         
-        /* Barra de navegación inferior */
-        .nav-bottom {
+        /* Estilos mejorados para el área de entrada */
+        .enhanced-input-container {
             display: flex;
-            justify-content: space-around;
+            align-items: center;
+            padding: 12px 15px;
             background: white;
             border-top: 1px solid #e0e0e0;
-            padding: 10px 0;
+            flex-shrink: 0;
         }
         
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 8px 15px;
-            color: #7f8c8d;
-            font-size: 12px;
+        .enhanced-input {
+            flex: 1;
+            padding: 14px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            outline: none;
+            font-size: 16px;
+            transition: all 0.3s;
+            background: #f8f9fa;
+        }
+        
+        .enhanced-input:focus {
+            border-color: #3498db;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        .enhanced-send-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
             cursor: pointer;
-            transition: color 0.3s;
+            font-weight: bold;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+            margin-left: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
         
-        .nav-item.active {
-            color: #3498db;
+        .enhanced-send-btn:hover {
+            transform: scale(1.05);
+            background: #2980b9;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
         }
         
-        .nav-icon {
-            font-size: 20px;
-            margin-bottom: 4px;
+        .enhanced-send-btn:active {
+            transform: scale(0.95);
         }
         
         /* Responsive para móviles */
@@ -272,14 +298,14 @@
                 padding: 8px 12px;
             }
             
-            input {
-                padding: 10px 12px;
-                font-size: 14px;
+            .enhanced-input {
+                padding: 12px 14px;
+                font-size: 15px;
             }
             
-            .send-btn {
-                width: 40px;
-                height: 40px;
+            .enhanced-send-btn {
+                width: 44px;
+                height: 44px;
             }
             
             .talk-button {
@@ -293,7 +319,7 @@
     <div class="container">
         <div class="header">
             <div class="logo-container">
-                <img src="https://bidamericas.com/tusabogados/logo.png" alt="Fusa Abogados" class="logo">
+                <img src="https://bidamericas.com/tusabogados/logo.png" alt="Fundación VANALI" class="logo">
             </div>
             
             <div class="header-content">
@@ -301,10 +327,10 @@
                     <div class="avatar"></div>
                 </div>
                 <div class="header-text">
-                    <h1>Sofia 💡</h1>
-                    <p class="subtitle">Representante de atención al cliente</p>
+                    <h1>Rocio</h1>
+                    <p class="subtitle">Asistente Virtual - Fundación VANALI</p>
                     <button class="talk-button" id="talkButton" onclick="startVoiceRecognition()">
-                        🎤 Hablar con Sofia
+                        Hablar con Rocio
                     </button>
                     <div class="status-indicator" id="statusIndicator">🔴 Inicializando...</div>
                 </div>
@@ -313,31 +339,21 @@
 
         <div class="chat-container" id="chatBox">
             <div class="message sofia-message">
-                ¡Hola! Soy Sofia, tu representante de atención al cliente. ¿En qué puedo ayudarte hoy?
+                ¡Hola! Soy Rocio, tu asistente virtual de la Fundación VANALI. Estoy aquí para ayudarte con información sobre nuestros cursos de manualidades. ¿En qué puedo ayudarte hoy?
             </div>
             <div class="typing-indicator" id="typingIndicator">
-                Sofia está escribiendo...
+                Rocio está escribiendo...
             </div>
         </div>
 
-        <div class="input-container">
-            <input type="text" id="userInput" placeholder="Escribe tu mensaje..." onkeypress="handleKeyPress(event)">
-            <button class="send-btn" onclick="sendMessage()">→</button>
-        </div>
-
-        <div class="nav-bottom">
-            <div class="nav-item active">
-                <div class="nav-icon">💬</div>
-                <span>Chat</span>
-            </div>
-            <div class="nav-item">
-                <div class="nav-icon">🎤</div>
-                <span>Voz</span>
-            </div>
-            <div class="nav-item">
-                <div class="nav-icon">📋</div>
-                <span>Historial</span>
-            </div>
+        <div class="enhanced-input-container">
+            <input type="text" class="enhanced-input" id="userInput" placeholder="Escribe tu mensaje aquí..." onkeypress="handleKeyPress(event)">
+            <button class="enhanced-send-btn" onclick="sendMessage()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M22 2L11 13" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
         </div>
     </div>
 
@@ -347,16 +363,6 @@
         
         document.addEventListener('DOMContentLoaded', function() {
             initializeApp();
-            
-            // Añadir funcionalidad a la navegación inferior
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.addEventListener('click', function() {
-                    document.querySelectorAll('.nav-item').forEach(nav => {
-                        nav.classList.remove('active');
-                    });
-                    this.classList.add('active');
-                });
-            });
         });
 
         function initializeApp() {
@@ -365,7 +371,7 @@
             
             // Mensaje de bienvenida
             setTimeout(() => {
-                const welcomeText = "Hola, mi nombre es Sofia. Soy tu asistente virtual con una voz latina cálida y profesional. ¿En qué puedo ayudarte hoy?";
+                const welcomeText = "¡Hola! Soy Rocio, tu asistente virtual de la Fundación VANALI. Estoy aquí para ayudarte con información sobre nuestros cursos de manualidades. ¿En qué puedo ayudarte hoy?";
                 // Enviar al backend para generar voz
                 generateAndPlayAudio(welcomeText);
             }, 1500);
@@ -591,10 +597,10 @@
                     console.error('Error:', error);
                     // Respuesta de respaldo si hay error en la conexión
                     const backupResponses = [
-                        "Entiendo tu consulta. Déjame verificar esa información para ti.",
-                        "Gracias por tu mensaje. Estoy buscando la mejor solución para tu caso.",
-                        "Comprendo tu situación. Permíteme ayudarte con eso.",
-                        "Excelente pregunta. Déjame consultar los detalles para darte una respuesta precisa."
+                        "Entiendo tu consulta sobre nuestros cursos. Déjame verificar esa información para ti.",
+                        "Gracias por tu mensaje. Estoy buscando la mejor información sobre nuestros cursos para ayudarte.",
+                        "Comprendo tu pregunta sobre la Fundación VANALI. Permíteme ayudarte con eso.",
+                        "Excelente pregunta sobre nuestros cursos. Déjame consultar los detalles para darte una respuesta precisa."
                     ];
                     const randomResponse = backupResponses[Math.floor(Math.random() * backupResponses.length)];
                     addMessage(randomResponse, false);
