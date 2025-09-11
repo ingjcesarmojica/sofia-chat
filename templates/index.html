@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sofia - Asistente Virtual</title>
+    <title>TusAbogados.com</title>
     <style>
         * {
             margin: 0;
@@ -89,10 +89,26 @@
             color: #7f8c8d;
         }
         
+        .content-container {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .tab-content {
+            display: none;
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
         .chat-container {
             background: #f8f9fa;
-            flex: 1;
-            overflow-y: auto;
+            height: 100%;
             padding: 15px;
             display: flex;
             flex-direction: column;
@@ -219,6 +235,88 @@
             100% { transform: scale(1); }
         }
         
+        /* Galería de fotos */
+        .gallery-container {
+            padding: 15px;
+            height: 100%;
+            overflow-y: auto;
+            background: #f8f9fa;
+        }
+        
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            padding: 10px;
+        }
+        
+        .gallery-item {
+            aspect-ratio: 1;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .gallery-item:hover {
+            transform: scale(1.03);
+        }
+        
+        .gallery-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* Galería de videos */
+        .videos-container {
+            padding: 15px;
+            height: 100%;
+            overflow-y: auto;
+            background: #f8f9fa;
+        }
+        
+        .videos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            padding: 10px;
+        }
+        
+        .video-item {
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            background: white;
+        }
+        
+        .video-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .video-thumbnail {
+            width: 100%;
+            aspect-ratio: 16/9;
+            object-fit: cover;
+            background: #e0e0e0;
+        }
+        
+        .video-info {
+            padding: 10px;
+        }
+        
+        .video-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+        
+        .video-duration {
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+        
         /* Barra de navegación inferior */
         .nav-bottom {
             display: flex;
@@ -286,6 +384,16 @@
                 padding: 10px 20px;
                 font-size: 14px;
             }
+            
+            .gallery-grid {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+                gap: 8px;
+            }
+            
+            .videos-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
         }
     </style>
 </head>
@@ -301,42 +409,65 @@
                     <div class="avatar"></div>
                 </div>
                 <div class="header-text">
-                    <h1>Sofia 💡</h1>
+                    <h1>Sofia</h1>
                     <p class="subtitle">Representante de atención al cliente</p>
                     <button class="talk-button" id="talkButton" onclick="startVoiceRecognition()">
-                        🎤 Hablar con Sofia
+                         Hablar con Sofia
                     </button>
                     <div class="status-indicator" id="statusIndicator">🔴 Inicializando...</div>
                 </div>
             </div>
         </div>
 
-        <div class="chat-container" id="chatBox">
-            <div class="message sofia-message">
-                ¡Hola! Soy Sofia, tu representante de atención al cliente. ¿En qué puedo ayudarte hoy?
-            </div>
-            <div class="typing-indicator" id="typingIndicator">
-                Sofia está escribiendo...
-            </div>
-        </div>
+        <div class="content-container">
+            <!-- Contenido del Chat -->
+            <div class="tab-content active" id="chatTab">
+                <div class="chat-container" id="chatBox">
+                    <div class="message sofia-message">
+                        ¡Hola! Soy Sofia, tu representante de atención al cliente. ¿En qué puedo ayudarte hoy?
+                    </div>
+                    <div class="typing-indicator" id="typingIndicator">
+                        Sofia está escribiendo...
+                    </div>
+                </div>
 
-        <div class="input-container">
-            <input type="text" id="userInput" placeholder="Escribe tu mensaje..." onkeypress="handleKeyPress(event)">
-            <button class="send-btn" onclick="sendMessage()">→</button>
+                <div class="input-container">
+                    <input type="text" id="userInput" placeholder="Escribe tu mensaje..." onkeypress="handleKeyPress(event)">
+                    <button class="send-btn" onclick="sendMessage()">→</button>
+                </div>
+            </div>
+            
+            <!-- Contenido de Fotos -->
+            <div class="tab-content" id="photosTab">
+                <div class="gallery-container">
+                    <div class="gallery-grid" id="photosGrid">
+                        <!-- Las imágenes se cargarán dinámicamente -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Contenido de Videos -->
+            <div class="tab-content" id="videosTab">
+                <div class="videos-container">
+                    <div class="videos-grid" id="videosGrid">
+                        <!-- Los videos se cargarán dinámicamente -->
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="nav-bottom">
-            <div class="nav-item active">
+            <div class="nav-item active" data-tab="chatTab">
                 <div class="nav-icon">💬</div>
                 <span>Chat</span>
             </div>
-            <div class="nav-item">
-                <div class="nav-icon">🎤</div>
-                <span>Voz</span>
+            <div class="nav-item" data-tab="photosTab">
+                <div class="nav-icon">🖼️</div>
+                <span>Fotos</span>
             </div>
-            <div class="nav-item">
-                <div class="nav-icon">📋</div>
-                <span>Historial</span>
+            <div class="nav-item" data-tab="videosTab">
+                <div class="nav-icon">🎬</div>
+                <span>Videos</span>
             </div>
         </div>
     </div>
@@ -355,19 +486,119 @@
             preferredLang: 'es-US'  // Idioma: es-US (Español Estados Unidos)
         };
         
+        // Datos de ejemplo para fotos y videos
+        const SAMPLE_PHOTOS = [
+            "https://picsum.photos/300/300?random=1",
+            "https://picsum.photos/300/300?random=2",
+            "https://picsum.photos/300/300?random=3",
+            "https://picsum.photos/300/300?random=4",
+            "https://picsum.photos/300/300?random=5",
+            "https://picsum.photos/300/300?random=6",
+            "https://picsum.photos/300/300?random=7",
+            "https://picsum.photos/300/300?random=8",
+            "https://picsum.photos/300/300?random=9"
+        ];
+        
+        const SAMPLE_VIDEOS = [
+            { title: "Asesoría Legal Básica", duration: "4:15", thumbnail: "https://picsum.photos/300/200?random=10" },
+            { title: "Derechos del Consumidor", duration: "7:32", thumbnail: "https://picsum.photos/300/200?random=11" },
+            { title: "Contratos y Acuerdos", duration: "5:48", thumbnail: "https://picsum.photos/300/200?random=12" },
+            { title: "Derecho Laboral", duration: "6:21", thumbnail: "https://picsum.photos/300/200?random=13" },
+            { title: "Propiedad Intelectual", duration: "8:05", thumbnail: "https://picsum.photos/300/200?random=14" },
+            { title: "Derecho de Familia", duration: "9:17", thumbnail: "https://picsum.photos/300/200?random=15" }
+        ];
+        
         document.addEventListener('DOMContentLoaded', function() {
             initializeApp();
+            setupTabsNavigation();
+            loadGalleryContent();
+            loadVideosContent();
             
             // Añadir funcionalidad a la navegación inferior
             document.querySelectorAll('.nav-item').forEach(item => {
                 item.addEventListener('click', function() {
-                    document.querySelectorAll('.nav-item').forEach(nav => {
-                        nav.classList.remove('active');
-                    });
-                    this.classList.add('active');
+                    const tabId = this.getAttribute('data-tab');
+                    switchTab(tabId);
                 });
             });
         });
+        
+        function setupTabsNavigation() {
+            // Inicializar tabs
+            switchTab('chatTab');
+        }
+        
+        function switchTab(tabId) {
+            // Ocultar todos los contenidos de tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Mostrar el tab seleccionado
+            document.getElementById(tabId).classList.add('active');
+            
+            // Actualizar navegación
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('data-tab') === tabId) {
+                    item.classList.add('active');
+                }
+            });
+        }
+        
+        function loadGalleryContent() {
+            const photosGrid = document.getElementById('photosGrid');
+            photosGrid.innerHTML = '';
+            
+            SAMPLE_PHOTOS.forEach(photoUrl => {
+                const galleryItem = document.createElement('div');
+                galleryItem.className = 'gallery-item';
+                
+                const img = document.createElement('img');
+                img.src = photoUrl;
+                img.alt = "Imagen de muestra";
+                img.className = 'gallery-img';
+                img.loading = 'lazy';
+                
+                galleryItem.appendChild(img);
+                photosGrid.appendChild(galleryItem);
+            });
+        }
+        
+        function loadVideosContent() {
+            const videosGrid = document.getElementById('videosGrid');
+            videosGrid.innerHTML = '';
+            
+            SAMPLE_VIDEOS.forEach(video => {
+                const videoItem = document.createElement('div');
+                videoItem.className = 'video-item';
+                
+                const thumbnail = document.createElement('div');
+                thumbnail.className = 'video-thumbnail';
+                thumbnail.style.backgroundImage = `url(${video.thumbnail})`;
+                thumbnail.style.backgroundSize = 'cover';
+                thumbnail.style.backgroundPosition = 'center';
+                
+                const videoInfo = document.createElement('div');
+                videoInfo.className = 'video-info';
+                
+                const title = document.createElement('div');
+                title.className = 'video-title';
+                title.textContent = video.title;
+                
+                const duration = document.createElement('div');
+                duration.className = 'video-duration';
+                duration.textContent = video.duration;
+                
+                videoInfo.appendChild(title);
+                videoInfo.appendChild(duration);
+                
+                videoItem.appendChild(thumbnail);
+                videoItem.appendChild(videoInfo);
+                
+                videosGrid.appendChild(videoItem);
+            });
+        }
 
         function initializeApp() {
             checkVoiceSupport();
