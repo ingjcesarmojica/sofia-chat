@@ -162,6 +162,39 @@
             text-align: center;
         }
         
+        /* Estilos para el contenedor de imágenes de materiales */
+        .image-message {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 10px;
+            margin-bottom: 12px;
+            max-width: 85%;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .image-container {
+            position: relative;
+            width: 100%;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+        
+        .image-container img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            display: block;
+        }
+        
+        .image-caption {
+            padding: 8px 5px 0;
+            font-size: 13px;
+            color: #666;
+            text-align: center;
+        }
+        
         .typing-indicator {
             display: none;
             padding: 10px 14px;
@@ -353,7 +386,7 @@
                 padding: 8px 12px;
             }
             
-            .video-message {
+            .video-message, .image-message {
                 max-width: 90%;
             }
             
@@ -627,7 +660,7 @@
 
         function startVoiceRecognition() {
             if (!voiceSupported) {
-                alert('El reconocimiento de voz no es compatible con tu navegador. Usa Chrome o Edge.');
+                alert('El reconocimiento de voz no es compatible con tu navegador. Usa Chrome or Edge.');
                 return;
             }
 
@@ -696,6 +729,46 @@
             scrollToLatestMessage();
         }
 
+        function showMaterials() {
+            const chatBox = document.getElementById('chatBox');
+            
+            // URLs de las imágenes de materiales
+            const materialImages = [
+                {url: 'https://bidamericas.com/vanali/foto1.png', caption: 'Material 1'},
+                {url: 'https://bidamericas.com/vanali/foto2.png', caption: 'Material 2'},
+                {url: 'https://bidamericas.com/vanali/foto3.png', caption: 'Material 3'},
+                {url: 'https://bidamericas.com/vanali/foto4.png', caption: 'Material 4'}
+            ];
+            
+            // Crear y agregar cada imagen al chat
+            materialImages.forEach((material, index) => {
+                const imageMessage = document.createElement('div');
+                imageMessage.className = 'image-message';
+                
+                const imageContainer = document.createElement('div');
+                imageContainer.className = 'image-container';
+                
+                const img = document.createElement('img');
+                img.src = material.url;
+                img.alt = material.caption;
+                img.onload = function() {
+                    scrollToLatestMessage();
+                };
+                
+                const imageCaption = document.createElement('div');
+                imageCaption.className = 'image-caption';
+                imageCaption.textContent = material.caption;
+                
+                imageContainer.appendChild(img);
+                imageMessage.appendChild(imageContainer);
+                imageMessage.appendChild(imageCaption);
+                
+                chatBox.appendChild(imageMessage);
+            });
+            
+            scrollToLatestMessage();
+        }
+
         function showTypingIndicator() {
             document.getElementById('typingIndicator').style.display = 'block';
             scrollToLatestMessage();
@@ -715,35 +788,32 @@
                 
                 showTypingIndicator();
                 
-                fetch('/api/chat', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ message: message })
-                })
-                .then(response => response.json())
-                .then(data => {
+                // Simular respuesta del servidor
+                setTimeout(() => {
                     hideTypingIndicator();
-                    if (data.response) {
-                        addMessage(data.response, false);
-                        generateAndPlayAudio(data.response);
+                    
+                    // Detectar si la pregunta es sobre materiales
+                    if (message.toLowerCase().includes('material') || 
+                        message.toLowerCase().includes('materiales') ||
+                        message.toLowerCase().includes('fotos') ||
+                        message.toLowerCase().includes('imágenes') ||
+                        message.toLowerCase().includes('imagenes')) {
+                        
+                        // Respuesta sobre materiales
+                        addMessage("Claro, aquí tienes nuestros materiales disponibles:", false);
+                        
+                        // Mostrar las imágenes de materiales
+                        showMaterials();
+                        
+                        // Generar audio de la respuesta
+                        generateAndPlayAudio("Claro, aquí tienes nuestros materiales disponibles");
                     } else {
-                        addMessage("Lo siento, hubo un error procesando tu mensaje.", false);
+                        // Respuesta genérica
+                        const response = "Entiendo tu consulta. En la Fundación VANALI ofrecemos diversos cursos de manualidades. ¿Te gustaría saber más sobre algún tema en particular?";
+                        addMessage(response, false);
+                        generateAndPlayAudio(response);
                     }
-                })
-                .catch(error => {
-                    hideTypingIndicator();
-                    console.error('Error:', error);
-                    const backupResponses = [
-                        "Entiendo tu consulta sobre nuestros cursos. Déjame verificar esa información para ti.",
-                        "Gracias por tu mensaje. Estoy buscando la mejor información sobre nuestros cursos para ayudarte.",
-                        "Comprendo tu pregunta sobre la Fundación VANALI. Permíteme ayudarte con eso.",
-                        "Excelente pregunta sobre nuestros cursos. Déjame consultar los detalles para darte una respuesta precisa."
-                    ];
-                    const randomResponse = backupResponses[Math.floor(Math.random() * backupResponses.length)];
-                    addMessage(randomResponse, false);
-                });
+                }, 1000);
             }
         }
 
