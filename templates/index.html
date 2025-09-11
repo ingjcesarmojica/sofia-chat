@@ -227,6 +227,28 @@
             text-align: center;
         }
         
+        /* Estilos para la galería de cursos */
+        .courses-gallery {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .course-item {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .course-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
         .typing-indicator {
             display: none;
             padding: 10px 14px;
@@ -409,6 +431,10 @@
                 height: 400px;
             }
             
+            .courses-gallery {
+                grid-template-columns: 1fr;
+            }
+            
             h1 {
                 font-size: 20px;
             }
@@ -478,6 +504,16 @@
             
             .form-container iframe {
                 height: 600px;
+            }
+            
+            .courses-gallery {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .courses-gallery {
+                grid-template-columns: repeat(4, 1fr);
             }
         }
     </style>
@@ -621,7 +657,7 @@
                 indicator.style.color = '#c0392b';
             } else {
                 indicator.style.background = 'rgba(255, 193, 7, 0.2)';
-                indicator.style.color = '##d35400';
+                indicator.style.color = '#d35400';
             }
         }
 
@@ -809,6 +845,65 @@
             scrollToLatestMessage();
         }
 
+        function showOtherCourses() {
+            const chatBox = document.getElementById('chatBox');
+            
+            // URLs de las imágenes de otros cursos
+            const otherCourses = [
+                {url: 'https://bidamericas.com/vanali/fotros1.jpeg', caption: 'Curso 1'},
+                {url: 'https://bidamericas.com/vanali/fotros2.jpeg', caption: 'Curso 2'},
+                {url: 'https://bidamericas.com/vanali/fotros3.jpeg', caption: 'Curso 3'},
+                {url: 'https://bidamericas.com/vanali/fotros4.jpeg', caption: 'Curso 4'},
+                {url: 'https://bidamericas.com/vanali/fotros5.jpeg', caption: 'Curso 5'},
+                {url: 'https://bidamericas.com/vanali/fotros6.jpeg', caption: 'Curso 6'},
+                {url: 'https://bidamericas.com/vanali/fotros7.jpeg', caption: 'Curso 7'},
+                {url: 'https://bidamericas.com/vanali/fotros8.jpeg', caption: 'Curso 8'},
+                {url: 'https://bidamericas.com/vanali/fotros9.jpeg', caption: 'Curso 9'},
+                {url: 'https://bidamericas.com/vanali/fotros10.jpeg', caption: 'Curso 10'}
+            ];
+            
+            // Crear mensaje con galería de cursos
+            const coursesMessage = document.createElement('div');
+            coursesMessage.className = 'message sofia-message';
+            coursesMessage.textContent = '¡Sí, claro! Además de los cursos de Papá y Mamá Noel, tenemos los siguientes cursos disponibles:';
+            chatBox.appendChild(coursesMessage);
+            
+            // Crear contenedor de galería
+            const galleryContainer = document.createElement('div');
+            galleryContainer.className = 'image-message';
+            
+            const galleryTitle = document.createElement('div');
+            galleryTitle.className = 'image-caption';
+            galleryTitle.textContent = 'Nuestros cursos disponibles';
+            galleryTitle.style.fontWeight = 'bold';
+            galleryTitle.style.marginBottom = '10px';
+            
+            const coursesGallery = document.createElement('div');
+            coursesGallery.className = 'courses-gallery';
+            
+            // Crear y agregar cada imagen de curso a la galería
+            otherCourses.forEach((course, index) => {
+                const courseItem = document.createElement('div');
+                courseItem.className = 'course-item';
+                
+                const img = document.createElement('img');
+                img.src = course.url;
+                img.alt = course.caption;
+                img.onload = function() {
+                    scrollToLatestMessage();
+                };
+                
+                courseItem.appendChild(img);
+                coursesGallery.appendChild(courseItem);
+            });
+            
+            galleryContainer.appendChild(galleryTitle);
+            galleryContainer.appendChild(coursesGallery);
+            chatBox.appendChild(galleryContainer);
+            
+            scrollToLatestMessage();
+        }
+
         function showRegistrationForm() {
             const chatBox = document.getElementById('chatBox');
             
@@ -893,9 +988,26 @@
                         
                         // Generar audio de la respuesta
                         generateAndPlayAudio("¡Excelente! Para registrarte en nuestros cursos, por favor completa el siguiente formulario");
+                    }
+                    // Detectar si la pregunta es sobre otros cursos
+                    else if (message.toLowerCase().includes('curso') || 
+                             message.toLowerCase().includes('cursos') ||
+                             message.toLowerCase().includes('otros') ||
+                             message.toLowerCase().includes('qué cursos') ||
+                             message.toLowerCase().includes('que cursos') ||
+                             message.toLowerCase().includes('qué más') ||
+                             message.toLowerCase().includes('que más') ||
+                             message.toLowerCase().includes('disponibles') ||
+                             message.toLowerCase().includes('ofrecen')) {
+                        
+                        // Mostrar otros cursos
+                        showOtherCourses();
+                        
+                        // Generar audio de la respuesta
+                        generateAndPlayAudio("¡Sí, claro! Además de los cursos de Papá y Mamá Noel, tenemos varios cursos disponibles. Te muestro algunos de ellos");
                     } else {
                         // Respuesta genérica
-                        const response = "Entiendo tu consulta. En la Fundación VANALI ofrecemos diversos cursos de manualidades. ¿Te gustaría saber más sobre materiales, horarios o cómo registrarte?";
+                        const response = "Entiendo tu consulta. En la Fundación VANALI ofrecemos diversos cursos de manualidades. ¿Te gustaría saber más sobre nuestros cursos, materiales, horarios o cómo registrarte?";
                         addMessage(response, false);
                         generateAndPlayAudio(response);
                     }
