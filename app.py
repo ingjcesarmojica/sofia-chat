@@ -109,7 +109,15 @@ def chat():
             ]
             response = responses[len(message) % len(responses)]
         
-        return jsonify({'response': response})
+        # Determinar si la respuesta requiere mostrar materiales o formulario
+        show_materials = any(word in message_lower for word in ['materiales', 'material', 'fotos', 'imágenes', 'imagenes'])
+        show_form = any(word in message_lower for word in ['inscribir', 'inscripción', 'registro', 'registrarse', 'matricular', 'formulario'])
+        
+        return jsonify({
+            'response': response,
+            'show_materials': show_materials,
+            'show_form': show_form
+        })
             
     except Exception as e:
         app.logger.error(f"Exception in chat: {str(e)}")
