@@ -1,24 +1,19 @@
 import os
 import requests
-import base64
 from flask import Flask, render_template, request, jsonify
-from dotenv import load_dotenv
 from flask_cors import CORS
-
-# Cargar variables del entorno
-load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
 
-# Configuración desde variables de entorno
-GOOGLE_TTS_API_KEY = os.getenv("GOOGLE_API_KEY")
-AUDIO_FOLDER = os.getenv("AUDIO_FOLDER", "audio")
-LANGUAGE_CODE = os.getenv("LANGUAGE_CODE", "es-ES")
-VOICE_NAME = os.getenv("VOICE_NAME", "es-ES-Standard-A")
+# Configuración desde variables de entorno (compatible con Render)
+GOOGLE_TTS_API_KEY = os.environ.get("GOOGLE_API_KEY")
+LANGUAGE_CODE = os.environ.get("LANGUAGE_CODE", "es-ES")
+VOICE_NAME = os.environ.get("VOICE_NAME", "es-ES-Standard-A")
 
-# Crear carpeta de audio
-os.makedirs(AUDIO_FOLDER, exist_ok=True)
+# En Render, no podemos escribir en sistema de archivos como en desarrollo
+# Así que eliminamos la creación de carpeta de audio
+# y manejamos el audio directamente en memoria
 
 @app.route('/')
 def index():
@@ -66,30 +61,4 @@ def speak_text():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@app.route('/api/chat', methods=['POST'])
-def chat_message():
-    """Endpoint para manejar mensajes del chat"""
-    try:
-        data = request.json
-        message = data.get('message', '')
-        
-        # Aquí puedes integrar con tu lógica de chatbot o IA
-        responses = [
-            "Entiendo tu consulta. Déjame verificar esa información para ti.",
-            "Gracias por tu mensaje. Estoy buscando la mejor solución para tu caso.",
-            "Comprendo tu situación. Permíteme ayudarte con eso.",
-            "Excelente pregunta. Déjame consultar los detalles para darte una respuesta precisa."
-        ]
-        
-        response = {
-            'text': responses[len(message) % len(responses)],  # Respuesta simple
-            'shouldSpeak': True
-        }
-        
-        return jsonify(response)
-        
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+# El resto del código se mantiene igual...
