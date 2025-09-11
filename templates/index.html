@@ -478,13 +478,15 @@
         let selectedVoice = null;
         let voices = [];
         
-        // Configuración específica de voz según la imagen
+        // Configuración específica de voz
         const VOICE_SETTINGS = {
-            pitch: 1.0,        // Tono de voz: 1.1
-            rate: 1.0,         // Velocidad: 1.1
-            volume: 1.0,
-            preferredLang: 'es-US'  // Idioma: es-US (Español Estados Unidos)
+            pitch: 1.0,
+            rate: 1.0,
+            volume: 1.0
         };
+        
+        // Lista de idiomas preferidos en orden de prioridad
+        const PREFERRED_LANGS = ['es-MX', 'es-ES', 'es-US', 'es-419', 'es'];
         
         // Datos de ejemplo para fotos y videos
         const SAMPLE_PHOTOS = [
@@ -667,23 +669,61 @@
                 return;
             }
             
-            // Priorizar es-US
-            const esUSVoices = spanishVoices.filter(voice => voice.lang === 'es-US');
+            // Primero intentar encontrar una voz femenina con acento latino
+            let bestVoice = null;
             
-            if (esUSVoices.length > 0) {
-                selectedVoice = esUSVoices[0];
-                updateStatus('🟢 Voz es-US encontrada');
+            // Buscar en orden de prioridad de idiomas
+            for (const lang of PREFERRED_LANGS) {
+                const langVoices = spanishVoices.filter(voice => voice.lang === lang);
+                
+                if (langVoices.length > 0) {
+                    // Priorizar voces que suenen femeninas
+                    const femaleVoices = langVoices.filter(voice => 
+                        voice.name.toLowerCase().includes('female') || 
+                        voice.name.toLowerCase().includes('mujer') ||
+                        voice.name.toLowerCase().includes('mujer') ||
+                        voice.name.toLowerCase().includes('zira') || // Voz femenina en Edge/Windows
+                        voice.name.toLowerCase().includes('helena') || // Voz femenina en Chrome
+                        voice.name.toLowerCase().includes('monica') // Voz femenina en algunos sistemas
+                    );
+                    
+                    if (femaleVoices.length > 0) {
+                        bestVoice = femaleVoices[0];
+                        break;
+                    } else if (langVoices.length > 0) {
+                        bestVoice = langVoices[0];
+                        break;
+                    }
+                }
+            }
+            
+            // Si no encontramos una voz preferida, usar la primera voz en español disponible
+            if (!bestVoice && spanishVoices.length > 0) {
+                bestVoice = spanishVoices[0];
+            }
+            
+            if (bestVoice) {
+                selectedVoice = bestVoice;
+                updateStatus('🟢 Voz ' + bestVoice.name + ' seleccionada');
+                console.log('Voz seleccionada:', bestVoice.name, bestVoice.lang);
             } else {
-                // Usar otra voz en español si no hay es-US
-                selectedVoice = spanishVoices[0];
-                updateStatus('⚠️ Usando voz alternativa');
+                updateStatus('⚠️ No se pudo seleccionar una voz adecuada');
             }
         }
         
         function speakText(text) {
             if (!selectedVoice) {
                 console.error('No hay voz seleccionada para hablar');
-                return;
+                // Intentar cargar voces de nuevo
+                loadVoices();
+                
+                // Si aún no hay voz seleccionada, usar la voz por defecto del sistema
+                if (!selectedVoice) {
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.lang = 'es-ES';
+                    window.speechSynthesis.speak(utterance);
+                    return;
+                }
             }
             
             // Detener cualquier síntesis de voz previa
@@ -693,7 +733,7 @@
             
             // Configurar la voz seleccionada
             utterance.voice = selectedVoice;
-            utterance.lang = selectedVoice.lang || 'es-US';
+            utterance.lang = selectedVoice.lang || 'es-ES';
             utterance.pitch = VOICE_SETTINGS.pitch;
             utterance.rate = VOICE_SETTINGS.rate;
             utterance.volume = VOICE_SETTINGS.volume;
@@ -709,6 +749,13 @@
             utterance.onerror = function(event) {
                 console.error('Error de síntesis de voz:', event);
                 updateStatus('❌ Error de voz');
+                
+                // En caso de error, intentar con la voz por defecto
+                if (selectedVoice) {
+                    const fallbackUtterance = new SpeechSynthesisUtterance(text);
+                    fallbackUtterance.lang = 'es-ES';
+                    window.speechSynthesis.speak(fallbackUtterance);
+                }
             };
             
             try {
@@ -716,6 +763,11 @@
             } catch (error) {
                 console.error('Error al hablar:', error);
                 updateStatus('❌ Error al iniciar voz');
+                
+                // Último intento con configuración mínima
+                const fallbackUtterance = new SpeechSynthesisUtterance(text);
+                fallbackUtterance.lang = 'es-ES';
+                window.speechSynthesis.speak(fallbackUtterance);
             }
         }
 
