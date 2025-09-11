@@ -227,28 +227,6 @@
             text-align: center;
         }
         
-        /* Estilos para la galería de cursos */
-        .courses-gallery {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-top: 10px;
-        }
-        
-        .course-item {
-            background: white;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        
-        .course-item img {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
-        
         .typing-indicator {
             display: none;
             padding: 10px 14px;
@@ -431,10 +409,6 @@
                 height: 400px;
             }
             
-            .courses-gallery {
-                grid-template-columns: 1fr;
-            }
-            
             h1 {
                 font-size: 20px;
             }
@@ -505,16 +479,6 @@
             .form-container iframe {
                 height: 600px;
             }
-            
-            .courses-gallery {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-
-        @media (min-width: 1024px) {
-            .courses-gallery {
-                grid-template-columns: repeat(4, 1fr);
-            }
         }
     </style>
 </head>
@@ -571,235 +535,380 @@
             </div>
         </div>
 
-        <div class="enhanced-input-container">
+        <div class="enhanced-input-container" id="inputContainer">
             <input type="text" class="enhanced-input" id="userInput" placeholder="Escribe tu mensaje aquí..." onkeypress="handleKeyPress(event)">
             <button class="enhanced-send-btn" onclick="sendMessage()">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="22" y1="2" x2="11" y2="13"></line>
-                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M22 2L11 13" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
             </button>
         </div>
     </div>
 
     <script>
-        // Variables globales
-        let recognition;
-        let isListening = false;
-        let chatBox = document.getElementById('chatBox');
-        let userInput = document.getElementById('userInput');
-        let typingIndicator = document.getElementById('typingIndicator');
-        let statusIndicator = document.getElementById('statusIndicator');
-        let talkButton = document.getElementById('talkButton');
+        let voiceSupported = false;
+        let recognition = null;
+        let isKeyboardVisible = false;
+        let welcomeVideoShown = false;
         
-        // Inicializar reconocimiento de voz si está disponible
-        function initializeVoiceRecognition() {
-            if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
-                recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-                recognition.continuous = false;
-                recognition.interimResults = false;
-                recognition.lang = 'es-ES';
-                
-                recognition.onstart = function() {
-                    isListening = true;
-                    talkButton.classList.add('listening');
-                    statusIndicator.textContent = "🎤 Escuchando...";
-                    userInput.placeholder = "Escuchando...";
-                };
-                
-                recognition.onresult = function(event) {
-                    const transcript = event.results[0][0].transcript;
-                    userInput.value = transcript;
-                    talkButton.classList.remove('listening');
-                    isListening = false;
-                    statusIndicator.textContent = "🟢 En línea";
-                    userInput.placeholder = "Escribe tu mensaje aquí...";
-                    sendMessage();
-                };
-                
-                recognition.onerror = function(event) {
-                    console.error('Error en reconocimiento de voz:', event.error);
-                    talkButton.classList.remove('listening');
-                    isListening = false;
-                    statusIndicator.textContent = "🟢 En línea";
-                    userInput.placeholder = "Escribe tu mensaje aquí...";
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+            setupViewportHandlers();
+        });
+
+        function initializeApp() {
+            checkVoiceSupport();
+            updateStatus('🔍 Inicializando sistema de voz...');
+            
+            // Mensaje de bienvenida
+            setTimeout(() => {
+                const welcomeText = "¡Hola! Soy Rocio, tu asistente virtual de la Fundación VANALI. Estoy aquí para ayudarte con información sobre nuestros cursos de manualidades. ¿En qué puedo ayudarte hoy?";
+                // Enviar al backend para generar voz
+                generateAndPlayAudio(welcomeText);
+            }, 1500);
+        }
+
+        function setupViewportHandlers() {
+            const visualViewport = window.visualViewport;
+            
+            if (visualViewport) {
+                visualViewport.addEventListener('resize', function() {
+                    const keyboardThreshold = window.innerHeight * 0.4;
+                    isKeyboardVisible = visualViewport.height < window.innerHeight - keyboardThreshold;
                     
-                    if (event.error === 'not-allowed') {
-                        addMessage("Por favor, permite el uso del micrófono en tu navegador para usar la función de voz.", 'sofia');
-                    }
-                };
-                
-                recognition.onend = function() {
-                    if (isListening) {
-                        talkButton.classList.remove('listening');
-                        isListening = false;
-                        statusIndicator.textContent = "🟢 En línea";
-                        userInput.placeholder = "Escribe tu mensaje aquí...";
-                    }
-                };
-                
-                statusIndicator.textContent = "🟢 En línea";
-            } else {
-                statusIndicator.textContent = "🔴 Voz no disponible";
-                talkButton.disabled = true;
-                talkButton.style.opacity = "0.6";
-                talkButton.style.cursor = "not-allowed";
-                talkButton.title = "El reconocimiento de voz no es compatible con tu navegador";
-            }
-        }
-        
-        // Iniciar reconocimiento de voz
-        function startVoiceRecognition() {
-            if (recognition && !isListening) {
-                try {
-                    recognition.start();
-                } catch (error) {
-                    console.error('Error al iniciar reconocimiento de voz:', error);
-                    statusIndicator.textContent = "🔴 Error de voz";
-                }
-            }
-        }
-        
-        // Agregar mensaje al chat
-        function addMessage(text, type) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${type}-message`;
-            messageDiv.textContent = text;
-            chatBox.appendChild(messageDiv);
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
-        
-        // Mostrar indicador de escritura
-        function showTypingIndicator() {
-            typingIndicator.style.display = 'block';
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
-        
-        // Ocultar indicador de escritura
-        function hideTypingIndicator() {
-            typingIndicator.style.display = 'none';
-        }
-        
-        // Manejar la tecla Enter
-        function handleKeyPress(event) {
-            if (event.key === 'Enter') {
-                sendMessage();
-            }
-        }
-        
-        // Enviar mensaje al backend
-        function sendMessage() {
-            const message = userInput.value.trim();
-            if (message === '') return;
-            
-            // Agregar mensaje del usuario al chat
-            addMessage(message, 'user');
-            userInput.value = '';
-            
-            // Mostrar que Rocio está escribiendo
-            showTypingIndicator();
-            
-            // Enviar mensaje al backend
-            fetch('https://bidamericas.com/vanali/chat.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: 'message=' + encodeURIComponent(message)
-            })
-            .then(response => response.json())
-            .then(data => {
-                hideTypingIndicator();
-                
-                // Procesar respuesta del backend
-                if (data.response) {
-                    // Si hay una respuesta de texto, mostrarla
-                    addMessage(data.response, 'sofia');
-                }
-                
-                // Si hay un video en la respuesta
-                if (data.video) {
-                    const videoMessageDiv = document.createElement('div');
-                    videoMessageDiv.className = 'video-message';
-                    videoMessageDiv.innerHTML = `
-                        <div class="video-container">
-                            <iframe src="${data.video}" title="Video de Fundación VANALI" allowfullscreen></iframe>
-                        </div>
-                        <div class="video-caption">Video tutorial - Fundación VANALI</div>
-                    `;
-                    chatBox.appendChild(videoMessageDiv);
-                    chatBox.scrollTop = chatBox.scrollHeight;
-                }
-                
-                // Si hay una imagen de materiales en la respuesta
-                if (data.materiales) {
-                    const imageMessageDiv = document.createElement('div');
-                    imageMessageDiv.className = 'image-message';
-                    imageMessageDiv.innerHTML = `
-                        <div class="image-container">
-                            <img src="${data.materiales}" alt="Materiales para el curso">
-                        </div>
-                        <div class="image-caption">Materiales necesarios para este curso</div>
-                    `;
-                    chatBox.appendChild(imageMessageDiv);
-                    chatBox.scrollTop = chatBox.scrollHeight;
-                }
-                
-                // Si hay un formulario en la respuesta
-                if (data.formulario) {
-                    const formMessageDiv = document.createElement('div');
-                    formMessageDiv.className = 'form-message';
-                    formMessageDiv.innerHTML = `
-                        <div class="form-container">
-                            <iframe src="${data.formulario}" title="Formulario de inscripción"></iframe>
-                        </div>
-                        <div class="form-caption">Completa el formulario para inscribirte en el curso</div>
-                    `;
-                    chatBox.appendChild(formMessageDiv);
-                    chatBox.scrollTop = chatBox.scrollHeight;
-                }
-                
-                // Si hay una galería de cursos en la respuesta
-                if (data.cursos && Array.isArray(data.cursos)) {
-                    const galleryMessageDiv = document.createElement('div');
-                    galleryMessageDiv.className = 'message sofia-message';
-                    galleryMessageDiv.innerHTML = `
-                        <p>Te muestro algunos de nuestros cursos disponibles:</p>
-                        <div class="courses-gallery">
-                            ${data.cursos.map(curso => `
-                                <div class="course-item">
-                                    <img src="${curso.imagen}" alt="${curso.nombre}">
-                                </div>
-                            `).join('')}
-                        </div>
-                    `;
-                    chatBox.appendChild(galleryMessageDiv);
-                    chatBox.scrollTop = chatBox.scrollHeight;
-                }
-            })
-            .catch(error => {
-                hideTypingIndicator();
-                console.error('Error:', error);
-                addMessage("Lo siento, estoy teniendo dificultades técnicas. Por favor, intenta nuevamente.", 'sofia');
-            });
-        }
-        
-        // Inicializar cuando se carga la página
-        window.onload = function() {
-            initializeVoiceRecognition();
-            userInput.focus();
-            
-            // Detectar cuando el teclado virtual se abre/cierra en móviles
-            if (window.visualViewport) {
-                window.visualViewport.addEventListener('resize', function() {
-                    if (this.height < window.innerHeight) {
+                    if (isKeyboardVisible) {
                         document.body.classList.add('keyboard-visible');
+                        scrollToLatestMessage();
                     } else {
                         document.body.classList.remove('keyboard-visible');
                     }
                 });
             }
-        };
+            
+            document.getElementById('chatBox').addEventListener('touchstart', function() {
+                document.getElementById('userInput').focus();
+            });
+        }
+
+        function scrollToLatestMessage() {
+            const chatBox = document.getElementById('chatBox');
+            setTimeout(() => {
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }, 100);
+        }
+
+        function checkVoiceSupport() {
+            voiceSupported = ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window);
+            
+            if (voiceSupported) {
+                updateStatus('🟢 Reconocimiento de voz activo');
+            } else {
+                updateStatus('🔴 Reconocimiento de voz no compatible');
+                document.getElementById('talkButton').style.display = 'none';
+            }
+        }
+        
+        function updateStatus(message) {
+            const indicator = document.getElementById('statusIndicator');
+            indicator.textContent = message;
+            
+            if (message.includes('🟢')) {
+                indicator.style.background = 'rgba(46, 204, 113, 0.2)';
+                indicator.style.color = '#27ae60';
+            } else if (message.includes('🔴')) {
+                indicator.style.background = 'rgba(231, 76, 60, 0.2)';
+                indicator.style.color = '#c0392b';
+            } else {
+                indicator.style.background = 'rgba(255, 193, 7, 0.2)';
+                indicator.style.color = '##d35400';
+            }
+        }
+
+        function generateAndPlayAudio(text) {
+            updateStatus('🔊 Generando audio...');
+            
+            fetch('/api/speak', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ text: text })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.error) {
+                    console.error('Error from server:', data.error);
+                    updateStatus('❌ Error: ' + (data.error.message || data.error));
+                    addMessage("Lo siento, hubo un error generando la voz. Por favor, intenta nuevamente.", false);
+                    return;
+                }
+                
+                if (data.audioContent || data.audioUrl) {
+                    const audioUrl = data.audioUrl || `data:audio/mp3;base64,${data.audioContent}`;
+                    const audio = new Audio(audioUrl);
+                    
+                    audio.onplay = function() {
+                        updateStatus('🎵 Reproduciendo voz...');
+                    };
+                    
+                    audio.onended = function() {
+                        updateStatus('🟢 Voz lista');
+                    };
+                    
+                    audio.onerror = function(e) {
+                        console.error('Error playing audio:', e);
+                        updateStatus('❌ Error reproduciendo audio');
+                    };
+                    
+                    const playPromise = audio.play();
+                    if (playPromise !== undefined) {
+                        playPromise.catch(error => {
+                            console.log('Audio play blocked, requiring user interaction');
+                            updateStatus('🔇 Toca para escuchar');
+                            
+                            const playButton = document.createElement('button');
+                            playButton.textContent = '▶️ Escuchar respuesta';
+                            playButton.className = 'play-button';
+                            playButton.onclick = function() {
+                                audio.play();
+                                this.remove();
+                            };
+                            
+                            const lastMessage = document.querySelector('#chatBox .message:last-child');
+                            if (lastMessage) {
+                                lastMessage.appendChild(playButton);
+                            }
+                        });
+                    }
+                } else {
+                    console.error('No audio content received:', data);
+                    updateStatus('❌ Error generando audio');
+                }
+            })
+            .catch(error => {
+                console.error('Fetch error:', error);
+                updateStatus('❌ Error de conexión');
+                addMessage("Error de conexión con el servicio de voz. Por favor, intenta nuevamente.", false);
+            });
+        }
+
+        function startVoiceRecognition() {
+            if (!voiceSupported) {
+                alert('El reconocimiento de voz no es compatible con tu navegador. Usa Chrome or Edge.');
+                return;
+            }
+
+            const talkButton = document.getElementById('talkButton');
+            
+            if (recognition && recognition.isListening) {
+                recognition.stop();
+                return;
+            }
+
+            recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = 'es-ES';
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            
+            recognition.onstart = function() {
+                talkButton.classList.add('listening');
+                recognition.isListening = true;
+                updateStatus('🎤 Escuchando...');
+            };
+            
+            recognition.onresult = function(event) {
+                const transcript = event.results[0][0].transcript;
+                document.getElementById('userInput').value = transcript;
+                sendMessage();
+                
+                talkButton.classList.remove('listening');
+                recognition.isListening = false;
+                updateStatus('🟢 Voz lista');
+            };
+            
+            recognition.onerror = function(event) {
+                talkButton.classList.remove('listening');
+                recognition.isListening = false;
+                
+                if (event.error !== 'no-speech' && event.error !== 'aborted') {
+                    alert('Error en reconocimiento: ' + event.error);
+                    updateStatus('❌ Error de reconocimiento');
+                } else {
+                    updateStatus('🟢 Voz lista');
+                }
+            };
+            
+            recognition.onend = function() {
+                talkButton.classList.remove('listening');
+                recognition.isListening = false;
+                updateStatus('🟢 Voz lista');
+            };
+            
+            try {
+                recognition.start();
+                updateStatus('🎤 Iniciando reconocimiento...');
+            } catch (error) {
+                alert('Error al activar el micrófono: ' + error.message);
+                updateStatus('❌ Error de micrófono');
+            }
+        }
+
+        function addMessage(message, isUser = false) {
+            const chatBox = document.getElementById('chatBox');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = isUser ? 'message user-message' : 'message sofia-message';
+            messageDiv.textContent = message;
+            chatBox.appendChild(messageDiv);
+            
+            scrollToLatestMessage();
+        }
+
+        function showMaterials() {
+            const chatBox = document.getElementById('chatBox');
+            
+            // URLs de las imágenes de materiales
+            const materialImages = [
+                {url: 'https://bidamericas.com/vanali/foto1.png', caption: 'Material 1'},
+                {url: 'https://bidamericas.com/vanali/foto2.png', caption: 'Material 2'},
+                {url: 'https://bidamericas.com/vanali/foto3.png', caption: 'Material 3'},
+                {url: 'https://bidamericas.com/vanali/foto4.png', caption: 'Material 4'}
+            ];
+            
+            // Crear y agregar cada imagen al chat
+            materialImages.forEach((material, index) => {
+                const imageMessage = document.createElement('div');
+                imageMessage.className = 'image-message';
+                
+                const imageContainer = document.createElement('div');
+                imageContainer.className = 'image-container';
+                
+                const img = document.createElement('img');
+                img.src = material.url;
+                img.alt = material.caption;
+                img.onload = function() {
+                    scrollToLatestMessage();
+                };
+                
+                const imageCaption = document.createElement('div');
+                imageCaption.className = 'image-caption';
+                imageCaption.textContent = material.caption;
+                
+                imageContainer.appendChild(img);
+                imageMessage.appendChild(imageContainer);
+                imageMessage.appendChild(imageCaption);
+                
+                chatBox.appendChild(imageMessage);
+            });
+            
+            scrollToLatestMessage();
+        }
+
+        function showRegistrationForm() {
+            const chatBox = document.getElementById('chatBox');
+            
+            // Crear elemento del formulario
+            const formMessage = document.createElement('div');
+            formMessage.className = 'form-message';
+            
+            const formContainer = document.createElement('div');
+            formContainer.className = 'form-container';
+            
+            // Crear iframe para el formulario de Jotform
+            const iframe = document.createElement('iframe');
+            iframe.src = 'https://form.jotform.com/252536286253056';
+            iframe.allowFullscreen = true;
+            iframe.title = 'Formulario de Registro - Fundación VANALI';
+            
+            const formCaption = document.createElement('div');
+            formCaption.className = 'form-caption';
+            formCaption.textContent = 'Completa el formulario para registrarte en nuestros cursos';
+            
+            formContainer.appendChild(iframe);
+            formMessage.appendChild(formContainer);
+            formMessage.appendChild(formCaption);
+            
+            chatBox.appendChild(formMessage);
+            
+            scrollToLatestMessage();
+        }
+
+        function showTypingIndicator() {
+            document.getElementById('typingIndicator').style.display = 'block';
+            scrollToLatestMessage();
+        }
+
+        function hideTypingIndicator() {
+            document.getElementById('typingIndicator').style.display = 'none';
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('userInput');
+            const message = input.value.trim();
+            
+            if (message) {
+                addMessage(message, true);
+                input.value = '';
+                
+                showTypingIndicator();
+                
+                // Simular respuesta del servidor
+                setTimeout(() => {
+                    hideTypingIndicator();
+                    
+                    // Detectar si la pregunta es sobre materiales
+                    if (message.toLowerCase().includes('material') || 
+                        message.toLowerCase().includes('materiales') ||
+                        message.toLowerCase().includes('fotos') ||
+                        message.toLowerCase().includes('imágenes') ||
+                        message.toLowerCase().includes('imagenes')) {
+                        
+                        // Respuesta sobre materiales
+                        addMessage("Claro, aquí tienes nuestros materiales disponibles:", false);
+                        
+                        // Mostrar las imágenes de materiales
+                        showMaterials();
+                        
+                        // Generar audio de la respuesta
+                        generateAndPlayAudio("Claro, aquí tienes nuestros materiales disponibles");
+                    } 
+                    // Detectar si la pregunta es sobre registro
+                    else if (message.toLowerCase().includes('registro') || 
+                             message.toLowerCase().includes('registrarse') ||
+                             message.toLowerCase().includes('inscripción') ||
+                             message.toLowerCase().includes('inscribirse') ||
+                             message.toLowerCase().includes('matricular') ||
+                             message.toLowerCase().includes('formulario')) {
+                        
+                        // Respuesta sobre registro
+                        addMessage("¡Excelente! Para registrarte en nuestros cursos, por favor completa el siguiente formulario:", false);
+                        
+                        // Mostrar el formulario de registro
+                        showRegistrationForm();
+                        
+                        // Generar audio de la respuesta
+                        generateAndPlayAudio("¡Excelente! Para registrarte en nuestros cursos, por favor completa el siguiente formulario");
+                    } else {
+                        // Respuesta genérica
+                        const response = "Entiendo tu consulta. En la Fundación VANALI ofrecemos diversos cursos de manualidades. ¿Te gustaría saber más sobre materiales, horarios o cómo registrarte?";
+                        addMessage(response, false);
+                        generateAndPlayAudio(response);
+                    }
+                }, 1000);
+            }
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                sendMessage();
+            }
+        }
     </script>
 </body>
 </html>
