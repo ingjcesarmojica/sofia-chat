@@ -401,7 +401,7 @@
         function generateAndPlayAudio(text) {
             updateStatus('🔊 Generando audio...');
             
-            fetch('/generate_audio', {
+            fetch('/api/speak', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -523,7 +523,7 @@
                 showTypingIndicator();
                 
                 // Enviar mensaje al backend para procesamiento
-                fetch('/chat', {
+                fetch('/api/chat', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
