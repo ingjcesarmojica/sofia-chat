@@ -398,45 +398,85 @@
             }
         }
 
-        function generateAndPlayAudio(text) {
-            updateStatus('🔊 Generando audio...');
-            
-            fetch('/api/speak', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ text: text })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.audioContent || data.audioUrl) {
-                    // Crear URL de audio desde base64
-                    const audioUrl = data.audioUrl || `data:audio/mp3;base64,${data.audioContent}`;
-                    
-                    // Reproducir el audio
-                    const audio = new Audio(audioUrl);
-                    audio.onplay = function() {
-                        updateStatus('🎵 Reproduciendo voz...');
-                    };
-                    audio.onended = function() {
-                        updateStatus('🟢 Voz lista');
-                    };
-                    audio.onerror = function() {
-                        console.error('Error reproduciendo audio');
-                        updateStatus('❌ Error reproduciendo audio');
-                    };
-                    audio.play();
-                } else {
-                    console.error('No audio content received:', data);
-                    updateStatus('❌ Error generando audio');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                updateStatus('❌ Error de conexión');
-            });
+       function generateAndPlayAudio(text) {
+    updateStatus('🔊 Generando audio...');
+    
+    fetch('/api/speak', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ text: text })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
+        return response.json();
+    })
+    .then(data => {
+        if (data.error) {
+            console.error('Error from server:', data.error);
+            updateStatus('❌ Error: ' + (data.error.message || data.error));
+            
+            // Mostrar mensaje de error en el chat
+            addMessage("Lo siento, hubo un error generando la voz. Por favor, intenta nuevamente.", false);
+            return;
+        }
+        
+        if (data.audioContent || data.audioUrl) {
+            const audioUrl = data.audioUrl || `data:audio/mp3;base64,${data.audioContent}`;
+            const audio = new Audio(audioUrl);
+            
+            audio.onplay = function() {
+                updateStatus('🎵 Reproduciendo voz...');
+            };
+            
+            audio.onended = function() {
+                updateStatus('🟢 Voz lista');
+            };
+            
+            audio.onerror = function(e) {
+                console.error('Error playing audio:', e);
+                updateStatus('❌ Error reproduciendo audio');
+            };
+            
+            // Intentar reproducir
+            const playPromise = audio.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    console.log('Audio play blocked, requiring user interaction');
+                    updateStatus('🔇 Toca para escuchar');
+                    
+                    // Crear botón para reproducir manualmente
+                    const playButton = document.createElement('button');
+                    playButton.textContent = '▶️ Escuchar respuesta';
+                    playButton.className = 'play-button';
+                    playButton.onclick = function() {
+                        audio.play();
+                        this.remove();
+                    };
+                    
+                    // Añadir botón después del último mensaje
+                    const lastMessage = document.querySelector('#chatBox .message:last-child');
+                    if (lastMessage) {
+                        lastMessage.appendChild(playButton);
+                    }
+                });
+            }
+        } else {
+            console.error('No audio content received:', data);
+            updateStatus('❌ Error generando audio');
+        }
+    })
+    .catch(error => {
+        console.error('Fetch error:', error);
+        updateStatus('❌ Error de conexión');
+        
+        // Mostrar mensaje de error en el chat
+        addMessage("Error de conexión con el servicio de voz. Por favor, intenta nuevamente.", false);
+    });
+}
 
         function startVoiceRecognition() {
             if (!voiceSupported) {
