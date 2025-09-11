@@ -478,15 +478,13 @@
         let selectedVoice = null;
         let voices = [];
         
-        // Configuración específica de voz
+        // Configuración específica de voz con tono 1.1 y velocidad 1.1
         const VOICE_SETTINGS = {
-            pitch: 1.0,
-            rate: 1.0,
-            volume: 1.0
+            pitch: 1.1,        // Tono de voz: 1.1
+            rate: 1.1,         // Velocidad: 1.1
+            volume: 1.0,
+            preferredLang: 'es-US'  // Idioma: es-US (Español Estados Unidos)
         };
-        
-        // Lista de idiomas preferidos en orden de prioridad
-        const PREFERRED_LANGS = ['es-MX', 'es-ES', 'es-US', 'es-419', 'es'];
         
         // Datos de ejemplo para fotos y videos
         const SAMPLE_PHOTOS = [
@@ -659,47 +657,57 @@
         }
         
         function selectBestVoice() {
-            // Buscar voces en español
+            // Buscar específicamente voces en español de Estados Unidos (es-US)
+            const esUSVoices = voices.filter(voice => 
+                voice.lang === 'es-US' || voice.lang === 'es-US'
+            );
+            
+            // Si no hay voces es-US, buscar cualquier voz en español
             const spanishVoices = voices.filter(voice => 
                 voice.lang.includes('es') || voice.lang.includes('ES')
             );
             
-            if (spanishVoices.length === 0) {
+            if (esUSVoices.length === 0 && spanishVoices.length === 0) {
                 updateStatus('⚠️ No hay voces en español');
                 return;
             }
             
-            // Primero intentar encontrar una voz femenina con acento latino
+            // Priorizar voces es-US
             let bestVoice = null;
             
-            // Buscar en orden de prioridad de idiomas
-            for (const lang of PREFERRED_LANGS) {
-                const langVoices = spanishVoices.filter(voice => voice.lang === lang);
+            // Primero buscar voces es-US femeninas
+            if (esUSVoices.length > 0) {
+                const femaleEsUSVoices = esUSVoices.filter(voice => 
+                    voice.name.toLowerCase().includes('female') || 
+                    voice.name.toLowerCase().includes('mujer') ||
+                    voice.name.toLowerCase().includes('zira') || // Voz femenina en Edge/Windows
+                    voice.name.toLowerCase().includes('helena') || // Voz femenina en Chrome
+                    voice.name.toLowerCase().includes('monica') // Voz femenina en algunos sistemas
+                );
                 
-                if (langVoices.length > 0) {
-                    // Priorizar voces que suenen femeninas
-                    const femaleVoices = langVoices.filter(voice => 
-                        voice.name.toLowerCase().includes('female') || 
-                        voice.name.toLowerCase().includes('mujer') ||
-                        voice.name.toLowerCase().includes('mujer') ||
-                        voice.name.toLowerCase().includes('zira') || // Voz femenina en Edge/Windows
-                        voice.name.toLowerCase().includes('helena') || // Voz femenina en Chrome
-                        voice.name.toLowerCase().includes('monica') // Voz femenina en algunos sistemas
-                    );
-                    
-                    if (femaleVoices.length > 0) {
-                        bestVoice = femaleVoices[0];
-                        break;
-                    } else if (langVoices.length > 0) {
-                        bestVoice = langVoices[0];
-                        break;
-                    }
+                if (femaleEsUSVoices.length > 0) {
+                    bestVoice = femaleEsUSVoices[0];
+                } else {
+                    bestVoice = esUSVoices[0];
                 }
-            }
-            
-            // Si no encontramos una voz preferida, usar la primera voz en español disponible
-            if (!bestVoice && spanishVoices.length > 0) {
-                bestVoice = spanishVoices[0];
+                updateStatus('🟢 Voz es-US encontrada');
+            } 
+            // Si no hay voces es-US, buscar voces en español femeninas
+            else if (spanishVoices.length > 0) {
+                const femaleSpanishVoices = spanishVoices.filter(voice => 
+                    voice.name.toLowerCase().includes('female') || 
+                    voice.name.toLowerCase().includes('mujer') ||
+                    voice.name.toLowerCase().includes('zira') ||
+                    voice.name.toLowerCase().includes('helena') ||
+                    voice.name.toLowerCase().includes('monica')
+                );
+                
+                if (femaleSpanishVoices.length > 0) {
+                    bestVoice = femaleSpanishVoices[0];
+                } else {
+                    bestVoice = spanishVoices[0];
+                }
+                updateStatus('⚠️ Usando voz alternativa');
             }
             
             if (bestVoice) {
@@ -721,6 +729,8 @@
                 if (!selectedVoice) {
                     const utterance = new SpeechSynthesisUtterance(text);
                     utterance.lang = 'es-ES';
+                    utterance.pitch = VOICE_SETTINGS.pitch;
+                    utterance.rate = VOICE_SETTINGS.rate;
                     window.speechSynthesis.speak(utterance);
                     return;
                 }
@@ -731,9 +741,9 @@
             
             const utterance = new SpeechSynthesisUtterance(text);
             
-            // Configurar la voz seleccionada
+            // Configurar la voz seleccionada con tono 1.1 y velocidad 1.1
             utterance.voice = selectedVoice;
-            utterance.lang = selectedVoice.lang || 'es-ES';
+            utterance.lang = selectedVoice.lang || VOICE_SETTINGS.preferredLang;
             utterance.pitch = VOICE_SETTINGS.pitch;
             utterance.rate = VOICE_SETTINGS.rate;
             utterance.volume = VOICE_SETTINGS.volume;
@@ -751,11 +761,11 @@
                 updateStatus('❌ Error de voz');
                 
                 // En caso de error, intentar con la voz por defecto
-                if (selectedVoice) {
-                    const fallbackUtterance = new SpeechSynthesisUtterance(text);
-                    fallbackUtterance.lang = 'es-ES';
-                    window.speechSynthesis.speak(fallbackUtterance);
-                }
+                const fallbackUtterance = new SpeechSynthesisUtterance(text);
+                fallbackUtterance.lang = VOICE_SETTINGS.preferredLang;
+                fallbackUtterance.pitch = VOICE_SETTINGS.pitch;
+                fallbackUtterance.rate = VOICE_SETTINGS.rate;
+                window.speechSynthesis.speak(fallbackUtterance);
             };
             
             try {
@@ -766,7 +776,9 @@
                 
                 // Último intento con configuración mínima
                 const fallbackUtterance = new SpeechSynthesisUtterance(text);
-                fallbackUtterance.lang = 'es-ES';
+                fallbackUtterance.lang = VOICE_SETTINGS.preferredLang;
+                fallbackUtterance.pitch = VOICE_SETTINGS.pitch;
+                fallbackUtterance.rate = VOICE_SETTINGS.rate;
                 window.speechSynthesis.speak(fallbackUtterance);
             }
         }
