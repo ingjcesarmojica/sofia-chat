@@ -410,9 +410,12 @@
             })
             .then(response => response.json())
             .then(data => {
-                if (data.audio_url) {
-                    // Reproducir el audio generado por el backend
-                    const audio = new Audio(data.audio_url);
+                if (data.audioContent || data.audioUrl) {
+                    // Crear URL de audio desde base64
+                    const audioUrl = data.audioUrl || `data:audio/mp3;base64,${data.audioContent}`;
+                    
+                    // Reproducir el audio
+                    const audio = new Audio(audioUrl);
                     audio.onplay = function() {
                         updateStatus('🎵 Reproduciendo voz...');
                     };
@@ -420,10 +423,12 @@
                         updateStatus('🟢 Voz lista');
                     };
                     audio.onerror = function() {
+                        console.error('Error reproduciendo audio');
                         updateStatus('❌ Error reproduciendo audio');
                     };
                     audio.play();
                 } else {
+                    console.error('No audio content received:', data);
                     updateStatus('❌ Error generando audio');
                 }
             })
@@ -533,10 +538,13 @@
                 .then(response => response.json())
                 .then(data => {
                     hideTypingIndicator();
-                    addMessage(data.response, false);
-                    
-                    // Generar y reproducir audio con la respuesta
-                    generateAndPlayAudio(data.response);
+                    if (data.response) {
+                        addMessage(data.response, false);
+                        // Generar y reproducir audio con la respuesta
+                        generateAndPlayAudio(data.response);
+                    } else {
+                        addMessage("Lo siento, hubo un error procesando tu mensaje.", false);
+                    }
                 })
                 .catch(error => {
                     hideTypingIndicator();
