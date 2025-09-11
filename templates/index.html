@@ -291,270 +291,624 @@
         .enhanced-send-btn:hover {
             transform: scale(1.05);
             background: #5a0255;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
         }
         
         .enhanced-send-btn:active {
-            transform: scale(0.98);
+            transform: scale(0.95);
         }
         
-        .audio-controls {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: 8px;
-            padding: 5px;
-        }
-        
-        .audio-btn {
+        /* Nuevo botón "Hablar con Rocio" */
+        .talk-button {
+            display: block;
             background: #6b0366;
             color: white;
             border: none;
-            border-radius: 20px;
-            padding: 8px 15px;
-            font-size: 13px;
+            border-radius: 25px;
+            padding: 12px 25px;
+            margin: 10px auto 5px;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 5px;
+            font-weight: 600;
+            font-size: 15px;
             transition: all 0.3s;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
         
-        .audio-btn:hover {
+        .talk-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
             background: #5a0255;
         }
         
-        .audio-btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
+        .talk-button.listening {
+            background: #e74c3c;
+            animation: pulse 1.5s infinite;
         }
         
-        /* Estilos para sugerencias de preguntas */
-        .suggestions-container {
-            padding: 10px 15px;
-            background: white;
-            border-top: 1px solid #e0e0e0;
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        /* Botón de WhatsApp flotante - POSICIÓN AJUSTADA */
+        .whatsapp-float {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            bottom: 85px; /* Cambiado de 25px a 85px para que no tape el botón de enviar */
+            right: 25px;
+            background-color: #FFF;
+            color: #FFF;
+            border-radius: 50px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.5);
+            z-index: 1000;
+            animation: whatsappBounce 2s infinite;
             display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            flex-shrink: 0;
-        }
-        
-        .suggestion-chip {
-            background: #f1f2f6;
-            color: #2c3e50;
-            border: none;
-            border-radius: 16px;
-            padding: 8px 14px;
-            font-size: 13px;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
             transition: all 0.3s;
         }
         
-        .suggestion-chip:hover {
-            background: #e4e6eb;
-            transform: translateY(-2px);
+        .whatsapp-float:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(37, 211, 102, 0.6);
         }
         
-        /* Estilos para pantallas más grandes */
+        .whatsapp-icon {
+            width: 35px;
+            height: 35px;
+        }
+        
+        @keyframes whatsappBounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+        
+        /* Tooltip para WhatsApp */
+        .whatsapp-tooltip {
+            position: absolute;
+            bottom: 70px;
+            right: 0;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        
+        .whatsapp-float:hover .whatsapp-tooltip {
+            opacity: 1;
+        }
+        
+        /* Responsive para móviles */
+        @media (max-width: 480px) {
+            .header {
+                padding: 15px 15px 10px;
+            }
+            
+            .avatar-container {
+                width: 70px;
+                height: 70px;
+            }
+            
+            .form-container iframe {
+                height: 400px;
+            }
+            
+            h1 {
+                font-size: 20px;
+            }
+            
+            .subtitle {
+                font-size: 13px;
+            }
+            
+            .message {
+                font-size: 13px;
+                padding: 8px 12px;
+            }
+            
+            .video-message, .image-message, .form-message {
+                max-width: 90%;
+            }
+            
+            .video-container iframe {
+                height: 180px;
+            }
+            
+            .enhanced-input {
+                padding: 12px 14px;
+                font-size: 15px;
+            }
+            
+            .enhanced-send-btn {
+                width: 44px;
+                height: 44px;
+            }
+            
+            .talk-button {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+            
+            .whatsapp-float {
+                width: 55px;
+                height: 55px;
+                bottom: 80px; /* Ajustado para móviles también */
+                right: 20px;
+            }
+            
+            .whatsapp-icon {
+                width: 30px;
+                height: 30px;
+            }
+            
+            /* Ajustes específicos para cuando el teclado está visible */
+            .keyboard-visible .header {
+                display: none;
+            }
+            
+            .keyboard-visible .chat-container {
+                padding-bottom: 5px;
+            }
+            
+            .keyboard-visible .whatsapp-float {
+                display: none;
+            }
+        }
+
         @media (min-width: 768px) {
-            .container {
-                max-width: 500px;
-                margin: 0 auto;
-                height: 100vh;
-                box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            .video-container iframe {
+                height: 300px;
+            }
+            
+            .form-container iframe {
+                height: 600px;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Botón flotante de WhatsApp con icono whats.png -->
+    <a class="whatsapp-float" id="whatsappButton" href="https://api.whatsapp.com/send?phone=573208744749&text=Hola,%20deseo%20más%20información%20de%20los%20cursos." target="_blank">
+        <img src="https://bidamericas.com/vanali/whats.png" alt="WhatsApp" class="whatsapp-icon">
+        <div class="whatsapp-tooltip">¡Contáctanos por WhatsApp!</div>
+    </a>
+
     <div class="container">
         <div class="header">
             <div class="logo-container">
-                <img src="https://bidamericas.com/vanali/logo.png" alt="VANALI" class="logo">
-            </div>
-            <div class="avatar-container">
-                <div class="avatar"></div>
-            </div>
-            <h1>Rocío - Asistente Virtual</h1>
-            <div class="subtitle">Fundación VANALI - Apoyando emprendimiento femenino</div>
-            <div class="status-indicator">En línea • Responde preguntas sobre nuestros cursos</div>
-        </div>
-        
-        <div class="chat-container" id="chatContainer">
-            <div class="message sofia-message">
-                ¡Hola! Soy Rocío, tu asistente virtual. Estoy aquí para ayudarte con información sobre nuestros cursos de manualidades navideñas. ¿En qué puedo ayudarte hoy?
+                <img src="https://bidamericas.com/vanali/logo.png" alt="Fundación VANALI" class="logo">
             </div>
             
-            <!-- Aquí se agregarán los mensajes dinámicamente -->
+            <div class="header-content">
+                <div class="avatar-container">
+                    <div class="avatar"></div>
+                </div>
+                <div class="header-text">
+                    <h1>Rocio</h1>
+                    <p class="subtitle">Asistente Virtual - Fundación VANALI</p>
+                    <button class="talk-button" id="talkButton" onclick="startVoiceRecognition()">
+                        Hablar con Rocio
+                    </button>
+                    <div class="status-indicator" id="statusIndicator">🔴 Inicializando...</div>
+                </div>
+            </div>
         </div>
-        
-        <div class="suggestions-container">
-            <button class="suggestion-chip" onclick="sendSuggestion('¿Qué cursos ofrecen?')">¿Qué cursos ofrecen?</button>
-            <button class="suggestion-chip" onclick="sendSuggestion('¿Dónde son los cursos?')">¿Dónde son los cursos?</button>
-            <button class="suggestion-chip" onclick="sendSuggestion('¿Cuánto cuestan?')">¿Cuánto cuestan?</button>
-            <button class="suggestion-chip" onclick="sendSuggestion('¿Cómo me inscribo?')">¿Cómo me inscribo?</button>
+
+        <div class="chat-container" id="chatBox">
+            <div class="message sofia-message">
+                ¡Hola! Soy Rocio, tu asistente virtual de la Fundación VANALI. Estoy aquí para ayudarte con información sobre nuestros cursos de manualidades. ¿En qué puedo ayudarte hoy?
+            </div>
+            
+            <!-- Videos de Papá Noel y Mamá Noel -->
+            <div class="video-message">
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/xat_hEOVnIU" title="Papá Noel - Fundación VANALI" allowfullscreen></iframe>
+                </div>
+                <div class="video-caption">Papá Noel - Fundación VANALI</div>
+            </div>
+            
+            <div class="video-message">
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/rkl27vNtfKI" title="Mamá Noel - Fundación VANALI" allowfullscreen></iframe>
+                </div>
+                <div class="video-caption">Mamá Noel - Fundación VANALI</div>
+            </div>
+            
+            <div class="typing-indicator" id="typingIndicator">
+                Rocio está escribiendo...
+            </div>
         </div>
-        
-        <div class="enhanced-input-container">
-            <input type="text" class="enhanced-input" id="userInput" placeholder="Escribe tu mensaje aquí..." autocomplete="off">
-            <button class="enhanced-send-btn" id="sendBtn" onclick="sendMessage()">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="22" y1="2" x2="11" y2="13"></line>
-                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+
+        <div class="enhanced-input-container" id="inputContainer">
+            <input type="text" class="enhanced-input" id="userInput" placeholder="Escribe tu mensaje aquí..." onkeypress="handleKeyPress(event)">
+            <button class="enhanced-send-btn" onclick="sendMessage()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M22 2L11 13" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
             </button>
         </div>
     </div>
 
     <script>
-        const chatContainer = document.getElementById('chatContainer');
-        const userInput = document.getElementById('userInput');
-        const sendBtn = document.getElementById('sendBtn');
-        const typingIndicator = document.createElement('div');
-        typingIndicator.className = 'typing-indicator';
-        typingIndicator.id = 'typingIndicator';
-        typingIndicator.textContent = 'Rocío está escribiendo...';
+        let voiceSupported = false;
+        let recognition = null;
+        let isKeyboardVisible = false;
+        let welcomeVideoShown = false;
         
-        // Agregar el indicador de escritura al contenedor (inicialmente oculto)
-        chatContainer.appendChild(typingIndicator);
-        
-        // Permitir enviar mensaje con Enter
-        userInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                sendMessage();
-            }
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+            setupViewportHandlers();
         });
-        
-        // Función para enviar mensajes sugeridos
-        function sendSuggestion(text) {
-            userInput.value = text;
-            sendMessage();
-        }
-        
-        // Función principal para enviar mensajes
-        async function sendMessage() {
-            const message = userInput.value.trim();
-            if (!message) return;
+
+        function initializeApp() {
+            checkVoiceSupport();
+            updateStatus('🔍 Inicializando sistema de voz...');
             
-            // Limpiar el input
-            userInput.value = '';
-            
-            // Agregar mensaje del usuario al chat
-            addMessage(message, 'user');
-            
-            // Mostrar indicador de que está escribiendo
-            showTypingIndicator();
-            
-            try {
-                // Enviar mensaje al backend
-                const response = await fetch('/api/chat', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ message: message })
-                });
-                
-                if (!response.ok) {
-                    throw new Error(`Error: ${response.status}`);
-                }
-                
-                const data = await response.json();
-                
-                // Ocultar indicador de escritura
-                hideTypingIndicator();
-                
-                // Agregar respuesta al chat
-                addMessage(data.response, 'sofia');
-                
-                // Mostrar materiales si es necesario
-                if (data.show_materials) {
-                    showMaterials();
-                }
-                
-                // Mostrar formulario si es necesario
-                if (data.show_form) {
-                    showForm();
-                }
-                
-                // Hacer scroll al final del chat
-                scrollToBottom();
-                
-            } catch (error) {
-                console.error('Error:', error);
-                hideTypingIndicator();
-                addMessage('Lo siento, estoy teniendo problemas técnicos en este momento. Por favor, intenta nuevamente más tarde.', 'sofia');
-                scrollToBottom();
-            }
-        }
-        
-        // Función para agregar mensajes al chat
-        function addMessage(text, sender) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${sender}-message`;
-            messageDiv.textContent = text;
-            
-            chatContainer.insertBefore(messageDiv, typingIndicator);
-            scrollToBottom();
-        }
-        
-        // Función para mostrar materiales
-        function showMaterials() {
-            const materialsDiv = document.createElement('div');
-            materialsDiv.className = 'image-message';
-            
-            materialsDiv.innerHTML = `
-                <div class="image-container">
-                    <img src="https://bidamericas.com/vanali/materiales.png" alt="Materiales para los cursos">
-                </div>
-                <div class="image-caption">
-                    Materiales incluidos en nuestros cursos
-                </div>
-            `;
-            
-            chatContainer.insertBefore(materialsDiv, typingIndicator);
-            scrollToBottom();
-        }
-        
-        // Función para mostrar formulario
-        function showForm() {
-            const formDiv = document.createElement('div');
-            formDiv.className = 'form-message';
-            
-            formDiv.innerHTML = `
-                <div class="form-container">
-                    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSf1U5v7pX2i8Q0Qz8Y0QwZzQ5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q/viewform?embedded=true" frameborder="0" marginheight="0" marginwidth="0">Cargando…</iframe>
-                </div>
-                <div class="form-caption">
-                    Completa este formulario para inscribirte en nuestros cursos
-                </div>
-            `;
-            
-            chatContainer.insertBefore(formDiv, typingIndicator);
-            scrollToBottom();
-        }
-        
-        // Función para mostrar el indicador de escritura
-        function showTypingIndicator() {
-            typingIndicator.style.display = 'block';
-            scrollToBottom();
-        }
-        
-        // Función para ocultar el indicador de escritura
-        function hideTypingIndicator() {
-            typingIndicator.style.display = 'none';
-        }
-        
-        // Función para hacer scroll al final del chat
-        function scrollToBottom() {
+            // Mensaje de bienvenida
             setTimeout(() => {
-                chatContainer.scrollTop = chatContainer.scrollHeight;
+                const welcomeText = "¡Hola! Soy Rocio, tu asistente virtual de la Fundación VANALI. Estoy aquí para ayudarte con información sobre nuestros cursos de manualidades. ¿En qué puedo ayudarte hoy?";
+                // Enviar al backend para generar voz
+                generateAndPlayAudio(welcomeText);
+            }, 1500);
+        }
+
+        function setupViewportHandlers() {
+            const visualViewport = window.visualViewport;
+            
+            if (visualViewport) {
+                visualViewport.addEventListener('resize', function() {
+                    const keyboardThreshold = window.innerHeight * 0.4;
+                    isKeyboardVisible = visualViewport.height < window.innerHeight - keyboardThreshold;
+                    
+                    if (isKeyboardVisible) {
+                        document.body.classList.add('keyboard-visible');
+                        scrollToLatestMessage();
+                    } else {
+                        document.body.classList.remove('keyboard-visible');
+                    }
+                });
+            }
+            
+            document.getElementById('chatBox').addEventListener('touchstart', function() {
+                document.getElementById('userInput').focus();
+            });
+        }
+
+        function scrollToLatestMessage() {
+            const chatBox = document.getElementById('chatBox');
+            setTimeout(() => {
+                chatBox.scrollTop = chatBox.scrollHeight;
             }, 100);
         }
+
+        function checkVoiceSupport() {
+            voiceSupported = ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window);
+            
+            if (voiceSupported) {
+                updateStatus('🟢 Reconocimiento de voz activo');
+            } else {
+                updateStatus('🔴 Reconocimiento de voz no compatible');
+                document.getElementById('talkButton').style.display = 'none';
+            }
+        }
         
-        // Inicializar scroll al cargar la página
-        window.addEventListener('load', scrollToBottom);
+        function updateStatus(message) {
+            const indicator = document.getElementById('statusIndicator');
+            indicator.textContent = message;
+            
+            if (message.includes('🟢')) {
+                indicator.style.background = 'rgba(46, 204, 113, 0.2)';
+                indicator.style.color = '#27ae60';
+            } else if (message.includes('🔴')) {
+                indicator.style.background = 'rgba(231, 76, 60, 0.2)';
+                indicator.style.color = '#c0392b';
+            } else {
+                indicator.style.background = 'rgba(255, 193, 7, 0.2)';
+                indicator.style.color = '##d35400';
+            }
+        }
+
+        function generateAndPlayAudio(text) {
+            updateStatus('🔊 Generando audio...');
+            
+            fetch('/api/speak', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ text: text })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.error) {
+                    console.error('Error from server:', data.error);
+                    updateStatus('❌ Error: ' + (data.error.message || data.error));
+                    addMessage("Lo siento, hubo un error generando la voz. Por favor, intenta nuevamente.", false);
+                    return;
+                }
+                
+                if (data.audioContent || data.audioUrl) {
+                    const audioUrl = data.audioUrl || `data:audio/mp3;base64,${data.audioContent}`;
+                    const audio = new Audio(audioUrl);
+                    
+                    audio.onplay = function() {
+                        updateStatus('🎵 Reproduciendo voz...');
+                    };
+                    
+                    audio.onended = function() {
+                        updateStatus('🟢 Voz lista');
+                    };
+                    
+                    audio.onerror = function(e) {
+                        console.error('Error playing audio:', e);
+                        updateStatus('❌ Error reproduciendo audio');
+                    };
+                    
+                    const playPromise = audio.play();
+                    if (playPromise !== undefined) {
+                        playPromise.catch(error => {
+                            console.log('Audio play blocked, requiring user interaction');
+                            updateStatus('🔇 Toca para escuchar');
+                            
+                            const playButton = document.createElement('button');
+                            playButton.textContent = '▶️ Escuchar respuesta';
+                            playButton.className = 'play-button';
+                            playButton.onclick = function() {
+                                audio.play();
+                                this.remove();
+                            };
+                            
+                            const lastMessage = document.querySelector('#chatBox .message:last-child');
+                            if (lastMessage) {
+                                lastMessage.appendChild(playButton);
+                            }
+                        });
+                    }
+                } else {
+                    console.error('No audio content received:', data);
+                    updateStatus('❌ Error generando audio');
+                }
+            })
+            .catch(error => {
+                console.error('Fetch error:', error);
+                updateStatus('❌ Error de conexión');
+                addMessage("Error de conexión con el servicio de voz. Por favor, intenta nuevamente.", false);
+            });
+        }
+
+        function startVoiceRecognition() {
+            if (!voiceSupported) {
+                alert('El reconocimiento de voz no es compatible con tu navegador. Usa Chrome or Edge.');
+                return;
+            }
+
+            const talkButton = document.getElementById('talkButton');
+            
+            if (recognition && recognition.isListening) {
+                recognition.stop();
+                return;
+            }
+
+            recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = 'es-ES';
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            
+            recognition.onstart = function() {
+                talkButton.classList.add('listening');
+                recognition.isListening = true;
+                updateStatus('🎤 Escuchando...');
+            };
+            
+            recognition.onresult = function(event) {
+                const transcript = event.results[0][0].transcript;
+                document.getElementById('userInput').value = transcript;
+                sendMessage();
+                
+                talkButton.classList.remove('listening');
+                recognition.isListening = false;
+                updateStatus('🟢 Voz lista');
+            };
+            
+            recognition.onerror = function(event) {
+                talkButton.classList.remove('listening');
+                recognition.isListening = false;
+                
+                if (event.error !== 'no-speech' && event.error !== 'aborted') {
+                    alert('Error en reconocimiento: ' + event.error);
+                    updateStatus('❌ Error de reconocimiento');
+                } else {
+                    updateStatus('🟢 Voz lista');
+                }
+            };
+            
+            recognition.onend = function() {
+                talkButton.classList.remove('listening');
+                recognition.isListening = false;
+                updateStatus('🟢 Voz lista');
+            };
+            
+            try {
+                recognition.start();
+                updateStatus('🎤 Iniciando reconocimiento...');
+            } catch (error) {
+                alert('Error al activar el micrófono: ' + error.message);
+                updateStatus('❌ Error de micrófono');
+            }
+        }
+
+        function addMessage(message, isUser = false) {
+            const chatBox = document.getElementById('chatBox');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = isUser ? 'message user-message' : 'message sofia-message';
+            messageDiv.textContent = message;
+            chatBox.appendChild(messageDiv);
+            
+            scrollToLatestMessage();
+        }
+
+        function showMaterials() {
+            const chatBox = document.getElementById('chatBox');
+            
+            // URLs de las imágenes de materiales
+            const materialImages = [
+                {url: 'https://bidamericas.com/vanali/foto1.png', caption: 'Material 1'},
+                {url: 'https://bidamericas.com/vanali/foto2.png', caption: 'Material 2'},
+                {url: 'https://bidamericas.com/vanali/foto3.png', caption: 'Material 3'},
+                {url: 'https://bidamericas.com/vanali/foto4.png', caption: 'Material 4'}
+            ];
+            
+            // Crear y agregar cada imagen al chat
+            materialImages.forEach((material, index) => {
+                const imageMessage = document.createElement('div');
+                imageMessage.className = 'image-message';
+                
+                const imageContainer = document.createElement('div');
+                imageContainer.className = 'image-container';
+                
+                const img = document.createElement('img');
+                img.src = material.url;
+                img.alt = material.caption;
+                img.onload = function() {
+                    scrollToLatestMessage();
+                };
+                
+                const imageCaption = document.createElement('div');
+                imageCaption.className = 'image-caption';
+                imageCaption.textContent = material.caption;
+                
+                imageContainer.appendChild(img);
+                imageMessage.appendChild(imageContainer);
+                imageMessage.appendChild(imageCaption);
+                
+                chatBox.appendChild(imageMessage);
+            });
+            
+            scrollToLatestMessage();
+        }
+
+        function showRegistrationForm() {
+            const chatBox = document.getElementById('chatBox');
+            
+            // Crear elemento del formulario
+            const formMessage = document.createElement('div');
+            formMessage.className = 'form-message';
+            
+            const formContainer = document.createElement('div');
+            formContainer.className = 'form-container';
+            
+            // Crear iframe para el formulario de Jotform
+            const iframe = document.createElement('iframe');
+            iframe.src = 'https://form.jotform.com/252536286253056';
+            iframe.allowFullscreen = true;
+            iframe.title = 'Formulario de Registro - Fundación VANALI';
+            
+            const formCaption = document.createElement('div');
+            formCaption.className = 'form-caption';
+            formCaption.textContent = 'Completa el formulario para registrarte en nuestros cursos';
+            
+            formContainer.appendChild(iframe);
+            formMessage.appendChild(formContainer);
+            formMessage.appendChild(formCaption);
+            
+            chatBox.appendChild(formMessage);
+            
+            scrollToLatestMessage();
+        }
+
+        function showTypingIndicator() {
+            document.getElementById('typingIndicator').style.display = 'block';
+            scrollToLatestMessage();
+        }
+
+        function hideTypingIndicator() {
+            document.getElementById('typingIndicator').style.display = 'none';
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('userInput');
+            const message = input.value.trim();
+            
+            if (message) {
+                addMessage(message, true);
+                input.value = '';
+                
+                showTypingIndicator();
+                
+                // Simular respuesta del servidor
+                setTimeout(() => {
+                    hideTypingIndicator();
+                    
+                    // Detectar si la pregunta es sobre materiales
+                    if (message.toLowerCase().includes('material') || 
+                        message.toLowerCase().includes('materiales') ||
+                        message.toLowerCase().includes('fotos') ||
+                        message.toLowerCase().includes('imágenes') ||
+                        message.toLowerCase().includes('imagenes')) {
+                        
+                        // Respuesta sobre materiales
+                        addMessage("Claro, aquí tienes nuestros materiales disponibles:", false);
+                        
+                        // Mostrar las imágenes de materiales
+                        showMaterials();
+                        
+                        // Generar audio de la respuesta
+                        generateAndPlayAudio("Claro, aquí tienes nuestros materiales disponibles");
+                    } 
+                    // Detectar si la pregunta es sobre registro
+                    else if (message.toLowerCase().includes('registro') || 
+                             message.toLowerCase().includes('registrarse') ||
+                             message.toLowerCase().includes('inscripción') ||
+                             message.toLowerCase().includes('inscribirse') ||
+                             message.toLowerCase().includes('matricular') ||
+                             message.toLowerCase().includes('formulario')) {
+                        
+                        // Respuesta sobre registro
+                        addMessage("¡Excelente! Para registrarte en nuestros cursos, por favor completa el siguiente formulario:", false);
+                        
+                        // Mostrar el formulario de registro
+                        showRegistrationForm();
+                        
+                        // Generar audio de la respuesta
+                        generateAndPlayAudio("¡Excelente! Para registrarte en nuestros cursos, por favor completa el siguiente formulario");
+                    } else {
+                        // Respuesta genérica
+                        const response = "Entiendo tu consulta. En la Fundación VANALI ofrecemos diversos cursos de manualidades. ¿Te gustaría saber más sobre materiales, horarios o cómo registrarte?";
+                        addMessage(response, false);
+                        generateAndPlayAudio(response);
+                    }
+                }, 1000);
+            }
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                sendMessage();
+            }
+        }
     </script>
 </body>
 </html>
