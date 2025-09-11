@@ -45,7 +45,7 @@ def speak_text():
         response = polly.synthesize_speech(
             Text=text,
             OutputFormat='mp3',
-            VoiceId='Penelope' # Femenina - Español de EE.UU.
+            VoiceId='Mia'      # Femenina - Español mexicano  
             # Otras voces en español: 'Enrique', 'Mia', 'Penelope'
         )
         
@@ -117,4 +117,5 @@ def health_check():
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=False)
+
 
