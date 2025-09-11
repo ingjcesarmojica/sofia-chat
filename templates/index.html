@@ -677,36 +677,14 @@
             
             // Primero buscar voces es-US femeninas
             if (esUSVoices.length > 0) {
-                const femaleEsUSVoices = esUSVoices.filter(voice => 
-                    voice.name.toLowerCase().includes('female') || 
-                    voice.name.toLowerCase().includes('mujer') ||
-                    voice.name.toLowerCase().includes('zira') || // Voz femenina en Edge/Windows
-                    voice.name.toLowerCase().includes('helena') || // Voz femenina en Chrome
-                    voice.name.toLowerCase().includes('monica') // Voz femenina en algunos sistemas
-                );
-                
-                if (femaleEsUSVoices.length > 0) {
-                    bestVoice = femaleEsUSVoices[0];
-                } else {
-                    bestVoice = esUSVoices[0];
-                }
+                // Seleccionar directamente la primera voz es-US disponible
+                bestVoice = esUSVoices[0];
                 updateStatus('🟢 Voz es-US encontrada');
             } 
-            // Si no hay voces es-US, buscar voces en español femeninas
+            // Si no hay voces es-US, buscar voces en español
             else if (spanishVoices.length > 0) {
-                const femaleSpanishVoices = spanishVoices.filter(voice => 
-                    voice.name.toLowerCase().includes('female') || 
-                    voice.name.toLowerCase().includes('mujer') ||
-                    voice.name.toLowerCase().includes('zira') ||
-                    voice.name.toLowerCase().includes('helena') ||
-                    voice.name.toLowerCase().includes('monica')
-                );
-                
-                if (femaleSpanishVoices.length > 0) {
-                    bestVoice = femaleSpanishVoices[0];
-                } else {
-                    bestVoice = spanishVoices[0];
-                }
+                // Seleccionar la primera voz en español disponible
+                bestVoice = spanishVoices[0];
                 updateStatus('⚠️ Usando voz alternativa');
             }
             
@@ -900,7 +878,7 @@
                 const thanks = [
                     "¡De nada! Es un placer poder ayudarte. Estoy aquí cuando me necesites.",
                     "No hay de qué agradecer. Me encanta poder asistirte en lo que requieras.",
-                    "¡Con mucho gusto! Siempre es un placer ayudar a nuestros clientes."
+                    "¡Con mucho gusto! Siempre es a placer ayudar a nuestros clientes."
                 ];
                 return thanks[Math.floor(Math.random() * thanks.length)];
             }
