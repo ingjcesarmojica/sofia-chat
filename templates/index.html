@@ -847,6 +847,7 @@
             document.getElementById('typingIndicator').style.display = 'none';
         }
 
+        
         function sendMessage() {
             const input = document.getElementById('userInput');
             const message = input.value.trim();
@@ -857,51 +858,59 @@
                 
                 showTypingIndicator();
                 
-                // Simular respuesta del servidor
-                setTimeout(() => {
+                // ENVIAR MENSAJE AL BACKEND - LLAMADA REAL
+                fetch('/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ message: message })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error en la respuesta del servidor');
+                    }
+                    return response.json();
+                })
+                .then(data => {
                     hideTypingIndicator();
                     
-                    // Detectar si la pregunta es sobre materiales
-                    if (message.toLowerCase().includes('material') || 
-                        message.toLowerCase().includes('materiales') ||
-                        message.toLowerCase().includes('fotos') ||
-                        message.toLowerCase().includes('imágenes') ||
-                        message.toLowerCase().includes('imagenes')) {
-                        
-                        // Respuesta sobre materiales
-                        addMessage("Claro, aquí tienes nuestros materiales disponibles:", false);
-                        
-                        // Mostrar las imágenes de materiales
-                        showMaterials();
-                        
-                        // Generar audio de la respuesta
-                        generateAndPlayAudio("Claro, aquí tienes nuestros materiales disponibles");
-                    } 
-                    // Detectar si la pregunta es sobre registro
-                    else if (message.toLowerCase().includes('registro') || 
-                             message.toLowerCase().includes('registrarse') ||
-                             message.toLowerCase().includes('inscripción') ||
-                             message.toLowerCase().includes('inscribirse') ||
-                             message.toLowerCase().includes('matricular') ||
-                             message.toLowerCase().includes('formulario')) {
-                        
-                        // Respuesta sobre registro
-                        addMessage("¡Excelente! Para registrarte en nuestros cursos, por favor completa el siguiente formulario:", false);
-                        
-                        // Mostrar el formulario de registro
-                        showRegistrationForm();
-                        
-                        // Generar audio de la respuesta
-                        generateAndPlayAudio("¡Excelente! Para registrarte en nuestros cursos, por favor completa el siguiente formulario");
-                    } else {
-                        // Respuesta genérica
-                        const response = "Entiendo tu consulta. En la Fundación VANALI ofrecemos diversos cursos de manualidades. ¿Te gustaría saber más sobre materiales, horarios o cómo registrarte?";
-                        addMessage(response, false);
-                        generateAndPlayAudio(response);
+                    if (data.error) {
+                        addMessage("Lo siento, hubo un error procesando tu mensaje. Por favor, intenta nuevamente.", false);
+                        return;
                     }
-                }, 1000);
+                    
+                    const response = data.response;
+                    addMessage(response, false);
+                    
+                    // Detectar si la respuesta sugiere mostrar materiales
+                    if (response.toLowerCase().includes('material') || 
+                        response.toLowerCase().includes('materiales') ||
+                        response.toLowerCase().includes('fotos') ||
+                        response.toLowerCase().includes('imágenes')) {
+                        showMaterials();
+                    }
+                    
+                    // Detectar si la respuesta sugiere mostrar formulario de registro
+                    if (response.toLowerCase().includes('formulario') || 
+                        response.toLowerCase().includes('registro') ||
+                        response.toLowerCase().includes('inscripción') ||
+                        response.toLowerCase().includes('inscribirse')) {
+                        showRegistrationForm();
+                    }
+                    
+                    // Generar audio de la respuesta
+                    generateAndPlayAudio(response);
+                })
+                .catch(error => {
+                    hideTypingIndicator();
+                    console.error('Error al conectar con el backend:', error);
+                    addMessage("Error de conexión con el servidor. Por favor, intenta nuevamente.", false);
+                });
             }
         }
+
+
 
         function handleKeyPress(event) {
             if (event.key === 'Enter') {
