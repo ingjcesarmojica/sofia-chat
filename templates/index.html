@@ -848,7 +848,7 @@
         }
 
         
-  function sendMessage() {
+function sendMessage() {
     const input = document.getElementById('userInput');
     const message = input.value.trim();
     
@@ -866,18 +866,46 @@
             userMessage.includes('imágenes') ||
             userMessage.includes('foto') ||
             userMessage.includes('imagen')) {
-            showMaterials();
+            setTimeout(() => {
+                showMaterials();
+            }, 500);
         }
         
-        // Si el usuario pide formulario de registro (NUEVO)
+        // Si el usuario pide formulario de registro
         if (userMessage.includes('formulario') || 
             userMessage.includes('registro') ||
             userMessage.includes('inscripción') ||
             userMessage.includes('inscribirse') ||
             userMessage.includes('inscribir') ||
             userMessage.includes('matricular') ||
-            userMessage.includes('matrícula')) {
-            showRegistrationForm();
+            userMessage.includes('matrícula') ||
+            userMessage.includes('registrarse')) {
+            setTimeout(() => {
+                showRegistrationForm();
+            }, 500);
+            return;
+        }
+        
+        // Si el usuario pregunta por otros cursos (NUEVO)
+        if (userMessage.includes('otros cursos') || 
+            userMessage.includes('otros cursos') ||
+            userMessage.includes('más cursos') ||
+            userMessage.includes('otros talleres') ||
+            userMessage.includes('más talleres') ||
+            userMessage.includes('qué otros cursos') ||
+            userMessage.includes('que otros cursos') ||
+            userMessage.includes('cursos adicionales') ||
+            userMessage.includes('tienen más cursos')) {
+            
+            // Primero mostrar el mensaje de respuesta
+            const responseMessage = "sí, a continuación te envio fotos de otros cursos, que tenemos actualmente disponibles, también puedes ampliar esta información comunicándote directamente a nuestro whatsapp.";
+            addMessage(responseMessage, false);
+            
+            // Luego mostrar las imágenes después de un breve delay
+            setTimeout(() => {
+                showOtherCourses();
+            }, 1000);
+            return;
         }
         
         showTypingIndicator();
@@ -913,7 +941,9 @@
                 botResponse.includes('materiales') ||
                 botResponse.includes('fotos') ||
                 botResponse.includes('imágenes')) {
-                showMaterials();
+                setTimeout(() => {
+                    showMaterials();
+                }, 500);
             }
             
             // Detectar si la respuesta del backend sugiere mostrar formulario de registro
@@ -921,7 +951,18 @@
                 botResponse.includes('registro') ||
                 botResponse.includes('inscripción') ||
                 botResponse.includes('inscribirse')) {
-                showRegistrationForm();
+                setTimeout(() => {
+                    showRegistrationForm();
+                }, 500);
+            }
+            
+            // Detectar si la respuesta del backend sugiere mostrar otros cursos (NUEVO)
+            if (botResponse.includes('otros cursos') || 
+                botResponse.includes('fotos de otros cursos') ||
+                botResponse.includes('cursos adicionales')) {
+                setTimeout(() => {
+                    showOtherCourses();
+                }, 500);
             }
             
             // Generar audio de la respuesta
