@@ -79,7 +79,7 @@ def chat():
         
         if any(word in message_lower for word in ['hola', 'buenos días', 'buenas tardes', 'saludos']):
             response = "¡Hola! Un gusto saludarte. Somos la Fundación VANALI. Nuestro objetivo social es apoyar el emprendimiento de las mujeres cabeza de familia a través de cursos de manualidades."
-        elif any(word in message_lower for word in ['curso actual', 'curso disponible', 'cursos disponibles', 'ofrecen', 'qué hacen', 'muñeco', 'noel']):
+        elif any(word in message_lower for word in ['que cursos hay','cuales estan dictando ahora','cuales estan dictando','ahorita que curso esta','ahorita que cursos estan dictando','ahorita cual estan dictando','que cursos tienen','que cursos hay','curso actual', 'curso disponible', 'cursos disponibles', 'ofrecen', 'qué hacen', 'muñeco', 'noel']):
             response = "Actualmente estamos dictando dos cursos muy especiales y navideños:\n1. Curso de Muñeco Papá Noel.\n2. Curso de Muñeco Mamá Noel."
         # NUEVAS PREGUNTAS SOBRE FECHAS
         elif any(word in message_lower for word in ['fecha', 'fechas', 'cuándo empieza', 'cuando inician los cursos', 'cuándo comienza', 'cuando comienzan', 'inicio del curso', 'cuando inicia el curso', 'próximo curso', 'proximo curso', 'cuando inicia', 'cuando inician', 'día de inicio', 'dia de inicio', 'empezar', 'comenzar', 'iniciar', 'arranque', 'cuándo arranca', 'cuando arranca']):
