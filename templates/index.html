@@ -809,6 +809,56 @@
             scrollToLatestMessage();
         }
 
+
+
+function showOtherCourses() {
+    const chatBox = document.getElementById('chatBox');
+    
+    // URLs de las imágenes de otros cursos
+    const courseImages = [
+        {url: 'https://bidamericas.com/vanali/fotros1.png', caption: 'Curso adicional 1'},
+        {url: 'https://bidamericas.com/vanali/fotros2.png', caption: 'Curso adicional 2'},
+        {url: 'https://bidamericas.com/vanali/fotros3.png', caption: 'Curso adicional 3'},
+        {url: 'https://bidamericas.com/vanali/fotros4.png', caption: 'Curso adicional 4'},
+        {url: 'https://bidamericas.com/vanali/fotros5.png', caption: 'Curso adicional 5'},
+        {url: 'https://bidamericas.com/vanali/fotros6.png', caption: 'Curso adicional 6'},
+        {url: 'https://bidamericas.com/vanali/fotros7.png', caption: 'Curso adicional 7'},
+        {url: 'https://bidamericas.com/vanali/fotros8.png', caption: 'Curso adicional 8'},
+        {url: 'https://bidamericas.com/vanali/fotros9.png', caption: 'Curso adicional 9'},
+        {url: 'https://bidamericas.com/vanali/fotros10.png', caption: 'Curso adicional 10'}
+    ];
+    
+    // Crear y agregar cada imagen al chat
+    courseImages.forEach((course, index) => {
+        const imageMessage = document.createElement('div');
+        imageMessage.className = 'image-message';
+        
+        const imageContainer = document.createElement('div');
+        imageContainer.className = 'image-container';
+        
+        const img = document.createElement('img');
+        img.src = course.url;
+        img.alt = course.caption;
+        img.onload = function() {
+            scrollToLatestMessage();
+        };
+        
+        const imageCaption = document.createElement('div');
+        imageCaption.className = 'image-caption';
+        imageCaption.textContent = course.caption;
+        
+        imageContainer.appendChild(img);
+        imageMessage.appendChild(imageContainer);
+        imageMessage.appendChild(imageCaption);
+        
+        chatBox.appendChild(imageMessage);
+    });
+    
+    scrollToLatestMessage();
+}
+
+
+
         function showRegistrationForm() {
             const chatBox = document.getElementById('chatBox');
             
