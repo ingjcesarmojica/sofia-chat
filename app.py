@@ -98,7 +98,8 @@ def chat():
         elif any(word in message_lower for word in ['precio', 'costo', 'valor', 'cuánto cuesta', 'tarifa']):
             response = "Para conocer los precios actualizados y toda la información sobre costos, te recomiendo contactar directamente a nuestra instructora Rocío por WhatsApp. Ella te dará todos los detalles personalizados. Da click en el icono de whatsapp, el sistema te comunicará automáticamente con ella"
         elif any(word in message_lower for word in ['gracias', 'muchas gracias', 'mil gracias', 'gracias rocio', 'gracias rocio', 'agradecer', 'agradecido', 'agradecida', 'amable', 'thanks', 'thank you', 'merci', 'te lo agradezco', 'se lo agradezco', 'appreciate', 'agradecimiento', 'valoro', 'agradecimiento', 'excelente ayuda', 'buena ayuda', 'muy amable', 'que amable', 'eres muy amable', 'muy agradecido', 'muy agradecida', 'perfecto', 'genial', 'fantástico', 'fantastico', 'estupendo', 'increíble', 'increible', 'brutal', 'chévere', 'chevere', 'cool', 'ok', 'okay', 'vale', 'listo', 'de acuerdo', 'entendido', 'comprendido', 'excelente', 'bien', 'good', 'nice', 'awesome', 'great']):
-            response = "¡Es un placer ayudarte! Estoy aquí para lo que necesites. ¿Hay algo más en lo que pueda asistirte?"        else:
+            response = "¡Es un placer ayudarte! Estoy aquí para lo que necesites. ¿Hay algo más en lo que pueda asistirte?"
+        else:
             responses = [
                 "Entiendo tu consulta sobre nuestros cursos. Te recomiendo contactar directamente a nuestra instructora Rocío por WhatsApp. Ella te dará todos los detalles personalizados. Da click en el icono de whatsapp, el sistema te comunicará automáticamente con ella.",
                 "Gracias por tu mensaje. Para información más específica y personalizada, te sugiero comunicarte con nuestra instructora Rocío por WhatsApp. Da click en el icono de whatsapp y el sistema te conectará directamente con ella.",
