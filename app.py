@@ -91,21 +91,20 @@ def chat():
             response = "Para que te centres solo en aprender, el valor del curso incluye todos los materiales necesarios para elaborar tus muñecos. Sin embargo, si lo prefieres, también puedes adquirirlos por tu cuenta."
         elif any(word in message_lower for word in ['dura', 'duración', 'horas', 'clases', 'semanas']):
             response = "La duración es la siguiente:\n- Curso de Papá Noel: 4 clases de 2 horas cada una.\n- Curso de Mamá Noel: 5 clases de 2 horas cada una.\nAmbos se pueden tomar los días martes y jueves."
-        elif any(word in message_lower for word in ['horario', 'horarios', 'cuándo', 'días', 'tarde', 'mañana']):
+        elif any(word in message_lower for word in ['horario', 'horarios', 'cuándo', 'cuando', 'días', 'dias', 'tarde', 'mañana', 'manana', 'noche', 'hora', 'horas', 'inicio', 'comienza', 'empieza', 'termina', 'finaliza', 'duración', 'duracion', 'lunes', 'martes', 'miércoles', 'miercoles', 'jueves', 'viernes', 'sábado', 'sabado', 'domingo', 'fin de semana', 'weekend', 'turno', 'jornada', 'disponibilidad', 'disponible']):
             response = "Tenemos dos horarios disponibles para tu comodidad:\n1. Horario de la mañana: de 9:00 a. m. a 11:00 a. m., de lunes a viernes.\n2. Horario de la tarde: de 3:00 p. m. a 5:00 p. m., de lunes a viernes."
         elif any(word in message_lower for word in ['certificado', 'premio', 'recibo', 'finalizar', 'ganador']):
             response = "¡Por supuesto! Al finalizar, recibirás un certificado que acredita el curso recibido. Además, ¡hay un premio especial si tu muñeco es calificado como el ganador del curso!"
         elif any(word in message_lower for word in ['precio', 'costo', 'valor', 'cuánto cuesta', 'tarifa']):
-            response = "Para conocer los precios actualizados y toda la información sobre costos, te recomiendo contactar directamente a nuestra instructora Rocío por WhatsApp. Ella te dará todos los detalles personalizados. 📱 https://wa.me/573208744749"
-        elif any(word in message_lower for word in ['gracias', 'agradecer', 'amable', 'thanks']):
-            response = "¡Es un placer ayudarte! Estoy aquí para lo que necesites. ¿Hay algo más en lo que pueda asistirte?"
-        else:
+            response = "Para conocer los precios actualizados y toda la información sobre costos, te recomiendo contactar directamente a nuestra instructora Rocío por WhatsApp. Ella te dará todos los detalles personalizados. Da click en el icono de whatsapp, el sistema te comunicará automáticamente con ella"
+        elif any(word in message_lower for word in ['gracias', 'muchas gracias', 'mil gracias', 'gracias rocio', 'gracias rocio', 'agradecer', 'agradecido', 'agradecida', 'amable', 'thanks', 'thank you', 'merci', 'te lo agradezco', 'se lo agradezco', 'appreciate', 'agradecimiento', 'valoro', 'agradecimiento', 'excelente ayuda', 'buena ayuda', 'muy amable', 'que amable', 'eres muy amable', 'muy agradecido', 'muy agradecida', 'perfecto', 'genial', 'fantástico', 'fantastico', 'estupendo', 'increíble', 'increible', 'brutal', 'chévere', 'chevere', 'cool', 'ok', 'okay', 'vale', 'listo', 'de acuerdo', 'entendido', 'comprendido', 'excelente', 'bien', 'good', 'nice', 'awesome', 'great']):
+            response = "¡Es un placer ayudarte! Estoy aquí para lo que necesites. ¿Hay algo más en lo que pueda asistirte?"        else:
             responses = [
-                "Entiendo tu consulta sobre nuestros cursos. Déjame verificar esa información para ti.",
-                "Gracias por tu mensaje. Estoy buscando la mejor información sobre nuestros cursos para ayudarte.",
-                "Comprendo tu pregunta sobre la Fundación VANALI. Permíteme ayudarte con eso.",
-                "Excelente pregunta sobre nuestros cursos. Déjame consultar los detalles para darte una respuesta precisa.",
-                "Tomo nota de tu consulta. Estoy procesando la información para brindarte la mejor asistencia sobre nuestros cursos."
+                "Entiendo tu consulta sobre nuestros cursos. Te recomiendo contactar directamente a nuestra instructora Rocío por WhatsApp. Ella te dará todos los detalles personalizados. Da click en el icono de whatsapp, el sistema te comunicará automáticamente con ella.",
+                "Gracias por tu mensaje. Para información más específica y personalizada, te sugiero comunicarte con nuestra instructora Rocío por WhatsApp. Da click en el icono de whatsapp y el sistema te conectará directamente con ella.",
+                "Comprendo tu pregunta sobre la Fundación VANALI. Para una atención más detallada, te recomiendo contactar a Rocío por WhatsApp. Solo da click en el icono de whatsapp y serás atendido personalmente.",
+                "Excelente pregunta sobre nuestros cursos. Para brindarte la mejor atención personalizada, te sugerimos contactar a nuestra instructora Rocío por WhatsApp. Da click en el icono de whatsapp y el sistema te comunicará automáticamente con ella.",
+                "Tomo nota de tu consulta. Para resolver tus dudas de manera más específica, te recomendamos contactar directamente con Rocío por WhatsApp. Da click en el icono de whatsapp y serás atendido personalmente."
             ]
             response = responses[len(message) % len(responses)]
         
