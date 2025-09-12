@@ -81,7 +81,7 @@ def chat():
             response = "¡Hola! Un gusto saludarte. Somos la Fundación VANALI. Nuestro objetivo social es apoyar el emprendimiento de las mujeres cabeza de familia a través de cursos de manualidades."
         elif any(word in message_lower for word in ['curso', 'cursos', 'ofrecen', 'qué hacen', 'muñeco', 'noel']):
             response = "Actualmente estamos dictando dos cursos muy especiales y navideños:\n1. Curso de Muñeco Papá Noel.\n2. Curso de Muñeco Mamá Noel."
-        elif any(word in message_lower for word in ['dónde', 'ubicación', 'lugar', 'dirección', 'fusagasugá']):
+        elif any(word in message_lower for word in ['dónde', 'donde', 'ubicación', 'ubicacion', 'ubicada', 'lugar', 'dirección', 'direccion', 'dirigirme', 'local', 'sitio', 'fusagasugá', 'fusagasuga', 'barrio', 'gaitán', 'gaitan', 'colegio', 'manuel', 'humberto', 'conjunto', 'andalucía', 'andaluci', 'andalucia']):
             response = "Los cursos son presenciales en la ciudad de Fusagasugá. Las clases se dictan en el Conjunto Andalucía, ubicado en el barrio Gaitán, específicamente frente al Colegio Manuel Humberto. ¡Es muy fácil de encontrar!"
         elif any(word in message_lower for word in ['profesor', 'profesora', 'quién enseña', 'imparte', 'rocío']):
             response = "Nuestros cursos son impartidos por la profesora Rocío, una experta en creación de muñecos y manualidades con más de 20 años de experiencia. ¡Aprenderás muchísimo con ella!"
@@ -96,7 +96,7 @@ def chat():
         elif any(word in message_lower for word in ['certificado', 'premio', 'recibo', 'finalizar', 'ganador']):
             response = "¡Por supuesto! Al finalizar, recibirás un certificado que acredita el curso recibido. Además, ¡hay un premio especial si tu muñeco es calificado como el ganador del curso!"
         elif any(word in message_lower for word in ['precio', 'costo', 'valor', 'cuánto cuesta', 'tarifa']):
-            response = "Los precios, que incluyen los materiales, son los siguientes:\n\nPara Papá Noel:\n- Tamaño grande (1 metro con 20 cm): $110.000 pesos.\n- Tamaño mediano (60 cm): $90.000 pesos.\n\nPara Mamá Noel:\n- Tamaño grande (1 metro con 20 cm): $120.000 pesos.\n- Tamaño mediano (60 cm): $100.000 pesos."
+            response = "Para conocer los precios actualizados y toda la información sobre costos, te recomiendo contactar directamente a nuestra instructora Rocío por WhatsApp. Ella te dará todos los detalles personalizados. 📱 https://wa.me/573208744749"
         elif any(word in message_lower for word in ['gracias', 'agradecer', 'amable', 'thanks']):
             response = "¡Es un placer ayudarte! Estoy aquí para lo que necesites. ¿Hay algo más en lo que pueda asistirte?"
         else:
