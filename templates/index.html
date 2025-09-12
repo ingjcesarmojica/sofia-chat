@@ -848,68 +848,92 @@
         }
 
         
-        function sendMessage() {
-            const input = document.getElementById('userInput');
-            const message = input.value.trim();
-            
-            if (message) {
-                addMessage(message, true);
-                input.value = '';
-                
-                showTypingIndicator();
-                
-                // ENVIAR MENSAJE AL BACKEND - LLAMADA REAL
-                fetch('/api/chat', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ message: message })
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Error en la respuesta del servidor');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    hideTypingIndicator();
-                    
-                    if (data.error) {
-                        addMessage("Lo siento, hubo un error procesando tu mensaje. Por favor, intenta nuevamente.", false);
-                        return;
-                    }
-                    
-                    const response = data.response;
-                    addMessage(response, false);
-                    
-                    // Detectar si la respuesta sugiere mostrar materiales
-                    if (response.toLowerCase().includes('material') || 
-                        response.toLowerCase().includes('materiales') ||
-                        response.toLowerCase().includes('fotos') ||
-                        response.toLowerCase().includes('imágenes')) {
-                        showMaterials();
-                    }
-                    
-                    // Detectar si la respuesta sugiere mostrar formulario de registro
-                    if (response.toLowerCase().includes('formulario') || 
-                        response.toLowerCase().includes('registro') ||
-                        response.toLowerCase().includes('inscripción') ||
-                        response.toLowerCase().includes('inscribirse')) {
-                        showRegistrationForm();
-                    }
-                    
-                    // Generar audio de la respuesta
-                    generateAndPlayAudio(response);
-                })
-                .catch(error => {
-                    hideTypingIndicator();
-                    console.error('Error al conectar con el backend:', error);
-                    addMessage("Error de conexión con el servidor. Por favor, intenta nuevamente.", false);
-                });
-            }
+  function sendMessage() {
+    const input = document.getElementById('userInput');
+    const message = input.value.trim();
+    
+    if (message) {
+        addMessage(message, true);
+        input.value = '';
+        
+        // VERIFICAR PALABRAS CLAVE EN EL MENSAJE DEL USUARIO
+        const userMessage = message.toLowerCase();
+        
+        // Si el usuario pide materiales
+        if (userMessage.includes('material') || 
+            userMessage.includes('materiales') ||
+            userMessage.includes('fotos') ||
+            userMessage.includes('imágenes') ||
+            userMessage.includes('foto') ||
+            userMessage.includes('imagen')) {
+            showMaterials();
         }
-
+        
+        // Si el usuario pide formulario de registro (NUEVO)
+        if (userMessage.includes('formulario') || 
+            userMessage.includes('registro') ||
+            userMessage.includes('inscripción') ||
+            userMessage.includes('inscribirse') ||
+            userMessage.includes('inscribir') ||
+            userMessage.includes('matricular') ||
+            userMessage.includes('matrícula')) {
+            showRegistrationForm();
+        }
+        
+        showTypingIndicator();
+        
+        // ENVIAR MENSAJE AL BACKEND - LLAMADA REAL
+        fetch('/api/chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ message: message })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error en la respuesta del servidor');
+            }
+            return response.json();
+        })
+        .then(data => {
+            hideTypingIndicator();
+            
+            if (data.error) {
+                addMessage("Lo siento, hubo un error procesando tu mensaje. Por favor, intenta nuevamente.", false);
+                return;
+            }
+            
+            const response = data.response;
+            addMessage(response, false);
+            
+            // Detectar si la respuesta del backend sugiere mostrar materiales
+            const botResponse = response.toLowerCase();
+            if (botResponse.includes('material') || 
+                botResponse.includes('materiales') ||
+                botResponse.includes('fotos') ||
+                botResponse.includes('imágenes')) {
+                showMaterials();
+            }
+            
+            // Detectar si la respuesta del backend sugiere mostrar formulario de registro
+            if (botResponse.includes('formulario') || 
+                botResponse.includes('registro') ||
+                botResponse.includes('inscripción') ||
+                botResponse.includes('inscribirse')) {
+                showRegistrationForm();
+            }
+            
+            // Generar audio de la respuesta
+            generateAndPlayAudio(response);
+        })
+        .catch(error => {
+            hideTypingIndicator();
+            console.error('Error al conectar con el backend:', error);
+            addMessage("Error de conexión con el servidor. Por favor, intenta nuevamente.", false);
+        });
+    }
+}
 
 
         function handleKeyPress(event) {
