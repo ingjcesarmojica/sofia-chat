@@ -913,13 +913,17 @@ function sendMessage() {
             userMessage.includes('fotos') ||
             userMessage.includes('imágenes') ||
             userMessage.includes('foto') ||
-            userMessage.includes('imagen')) {
+            userMessage.includes('imagen') ||
+            userMessage.includes('foto1') ||
+            userMessage.includes('foto2') ||
+            userMessage.includes('foto3') ||
+            userMessage.includes('foto4')) {
             setTimeout(() => {
                 showMaterials();
             }, 500);
         }
         
-        // Si el usuario pide formulario de registro
+        // Si el usuario pide formulario de registro (PALABRAS CLAVE AMPLIADAS)
         if (userMessage.includes('formulario') || 
             userMessage.includes('registro') ||
             userMessage.includes('inscripción') ||
@@ -927,23 +931,51 @@ function sendMessage() {
             userMessage.includes('inscribir') ||
             userMessage.includes('matricular') ||
             userMessage.includes('matrícula') ||
-            userMessage.includes('registrarse')) {
+            userMessage.includes('registrarse') ||
+            userMessage.includes('inscripcion') ||
+            userMessage.includes('matricula') ||
+            userMessage.includes('quiero inscribirme') ||
+            userMessage.includes('deseo registrarme') ||
+            userMessage.includes('quiero registrarme') ||
+            userMessage.includes('cómo me inscribo') ||
+            userMessage.includes('como me inscribo') ||
+            userMessage.includes('quiero tomar el curso') ||
+            userMessage.includes('deseo tomar el curso') ||
+            userMessage.includes('quiero participar') ||
+            userMessage.includes('deseo participar') ||
+            userMessage.includes('quiero el curso') ||
+            userMessage.includes('me quiero inscribir') ||
+            userMessage.includes('quiero inscribir') ||
+            userMessage.includes('necesito inscribir') ||
+            userMessage.includes('quiero matricular') ||
+            userMessage.includes('deseo matricular')) {
+            
+            // Mostrar el mensaje de respuesta primero
+            const responseMessage = "Perfecto, te muestro el formulario de registro para que puedas inscribirte en nuestros cursos.";
+            addMessage(responseMessage, false);
+            
+            // Luego mostrar el formulario después de un breve delay
             setTimeout(() => {
                 showRegistrationForm();
-            }, 500);
-            return;
+            }, 1000);
+            return; // Salimos aquí para no hacer la llamada al backend
         }
         
-        // Si el usuario pregunta por otros cursos (NUEVO)
+        // Si el usuario pregunta por otros cursos
         if (userMessage.includes('otros cursos') || 
-            userMessage.includes('otros cursos') ||
             userMessage.includes('más cursos') ||
             userMessage.includes('otros talleres') ||
             userMessage.includes('más talleres') ||
             userMessage.includes('qué otros cursos') ||
             userMessage.includes('que otros cursos') ||
             userMessage.includes('cursos adicionales') ||
-            userMessage.includes('tienen más cursos')) {
+            userMessage.includes('tienen más cursos') ||
+            userMessage.includes('otros productos') ||
+            userMessage.includes('más productos') ||
+            userMessage.includes('qué más tienen') ||
+            userMessage.includes('que mas tienen') ||
+            userMessage.includes('qué otros productos') ||
+            userMessage.includes('que otros productos')) {
             
             // Primero mostrar el mensaje de respuesta
             const responseMessage = "sí, a continuación te envio fotos de otros cursos, que tenemos actualmente disponibles, también puedes ampliar esta información comunicándote directamente a nuestro whatsapp.";
@@ -953,7 +985,7 @@ function sendMessage() {
             setTimeout(() => {
                 showOtherCourses();
             }, 1000);
-            return;
+            return; // Salimos aquí para no hacer la llamada al backend
         }
         
         showTypingIndicator();
@@ -988,7 +1020,11 @@ function sendMessage() {
             if (botResponse.includes('material') || 
                 botResponse.includes('materiales') ||
                 botResponse.includes('fotos') ||
-                botResponse.includes('imágenes')) {
+                botResponse.includes('imágenes') ||
+                botResponse.includes('foto1') ||
+                botResponse.includes('foto2') ||
+                botResponse.includes('foto3') ||
+                botResponse.includes('foto4')) {
                 setTimeout(() => {
                     showMaterials();
                 }, 500);
@@ -998,16 +1034,18 @@ function sendMessage() {
             if (botResponse.includes('formulario') || 
                 botResponse.includes('registro') ||
                 botResponse.includes('inscripción') ||
-                botResponse.includes('inscribirse')) {
+                botResponse.includes('inscribirse') ||
+                botResponse.includes('inscripcion')) {
                 setTimeout(() => {
                     showRegistrationForm();
                 }, 500);
             }
             
-            // Detectar si la respuesta del backend sugiere mostrar otros cursos (NUEVO)
+            // Detectar si la respuesta del backend sugiere mostrar otros cursos
             if (botResponse.includes('otros cursos') || 
                 botResponse.includes('fotos de otros cursos') ||
-                botResponse.includes('cursos adicionales')) {
+                botResponse.includes('cursos adicionales') ||
+                botResponse.includes('otros productos')) {
                 setTimeout(() => {
                     showOtherCourses();
                 }, 500);
@@ -1023,6 +1061,7 @@ function sendMessage() {
         });
     }
 }
+
 
 
         function handleKeyPress(event) {
