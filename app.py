@@ -99,7 +99,7 @@ def chat():
             response = "Para conocer los precios actualizados y toda la información sobre costos, te recomiendo contactar directamente a nuestra instructora Rocío por WhatsApp. Ella te dará todos los detalles personalizados. Da click en el icono de whatsapp, el sistema te comunicará automáticamente con ella"
         
         # NUEVAS PREGUNTAS SOBRE FECHAS
-        elif any(word in message_lower for word in ['fecha', 'fechas', 'cuándo empieza', 'cuando empieza', 'cuándo comienza', 'cuando comienza', 'inicio del curso', 'comienzo del curso', 'próximo curso', 'proximo curso', 'cuándo inicia', 'cuando inicia', 'día de inicio', 'dia de inicio', 'empezar', 'comenzar', 'iniciar', 'arranque', 'cuándo arranca', 'cuando arranca']):
+        elif any(word in message_lower for word in ['fecha', 'fechas', 'cuándo empieza', 'cuando inician los cursos', 'cuándo comienza', 'cuando comienzan', 'inicio del curso', 'cuando inicia el curso', 'próximo curso', 'proximo curso', 'cuando inicia', 'cuando inician', 'día de inicio', 'dia de inicio', 'empezar', 'comenzar', 'iniciar', 'arranque', 'cuándo arranca', 'cuando arranca']):
             response = "Para saber qué fecha es la más próxima contáctate vía WhatsApp"
         elif any(word in message_lower for word in ['me dices cuando comienzan', 'dime cuando comienzan', 'cuando comienzan', 'cuándo comienzan', 'me dices cuando empiezan', 'dime cuando empiezan', 'cuando empiezan', 'cuándo empiezan', 'me dices la fecha', 'dime la fecha', 'quiero saber la fecha', 'necesito saber la fecha', 'información de fechas', 'informacion de fechas', 'fechas de inicio', 'cuando son las clases', 'cuándo son las clases']):
             response = "Para saber qué fecha es la más próxima contáctate vía WhatsApp, por favor"
